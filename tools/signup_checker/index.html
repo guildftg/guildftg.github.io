@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -102,8 +101,8 @@ function compare() {
     const names1 = extractNames(document.getElementById("json1").value);
     const names2 = extractNames(document.getElementById("json2").value);
 
-    const set1 = new Set(names1);
-    const set2 = new Set(names2);
+    const set1 = new Set(names1.active);
+    const set2 = new Set(names2.active);
 
     const firstOnly = [...set1].filter(n => !set2.has(n)).sort();
     const mutual = [...set1].filter(n => set2.has(n)).sort();
