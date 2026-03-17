@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Raid Helper API Tester</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #1e1e1e;
+    color: white;
+    padding: 20px;
+}
+input {
+    padding: 10px;
+    width: 300px;
+    margin-right: 10px;
+    background: #2a2a2a;
+    border: 1px solid #444;
+    color: white;
+}
+button {
+    padding: 10px 20px;
+    cursor: pointer;
+}
+pre {
+    background: #111;
+    padding: 15px;
+    overflow-x: auto;
+    max-height: 400px;
+}
+.section {
+    margin-top: 20px;
+}
+</style>
+</head>
+
+<body>
+
+<h2>Raid Helper Event Fetcher</h2>
+
+<input id="eventId" placeholder="Enter Event ID">
+<button onclick="fetchEvent()">Fetch</button>
+
+<div class="section">
+    <h3>Status</h3>
+    <div id="status">Idle</div>
+</div>
+
+<div class="section">
+    <h3>Parsed Output</h3>
+    <pre id="parsed"></pre>
+</div>
+
+<div class="section">
+    <h3>Raw JSON</h3>
+    <pre id="raw"></pre>
+</div>
+
+<script>
+async function fetchEvent() {
+    const eventId = document.getElementById("eventId").value.trim();
+    const statusEl = document.getElementById("status");
+
+    if (!eventId) {
+        alert("Enter an event ID");
+        return;
+    }
+
+    const url = `https://raid-helper.dev/api/v2/events/${eventId}`;
+
+    statusEl.textContent = "Fetching...";
+
+    try {
+        const res = await fetch(url);
+
+        if (!res.ok) {
+            throw new Error("HTTP " + res.status);
+        }
+
+        const data = await res.json();
+
+        statusEl.textContent = "Success";
+
+        // Show raw JSON
+        document.getElementById("raw").textContent =
+            JSON.stringify(data, null, 2);
+
+        // Extract useful info
+        const active = [];
+        const absent = [];
+
+        if (data.signUps && Array.isArray(data.signUps)) {
+            data.signUps.forEach(s => {
+                if (!s.name) return;
+
+                const isAbsent =
+                    s.className === "Absence" ||
+                    s.roleName === "Absence" ||
+                    s.specName === "Absence";
+
+                if (isAbsent) absent.push(s.name);
+                else active.push(s.name);
+            });
+        }
+
+        document.getElementById("parsed").textContent =
+`Active (${active.length})
+-----------------------
+${active.join("\n")}
+
+Absent (${absent.length})
+-----------------------
+${absent.join("\n")}`;
+
+    } catch (err) {
+        console.error(err);
+        statusEl.textContent = "Error: " + err.message;
+
+        document.getElementById("raw").textContent = "";
+        document.getElementById("parsed").textContent = "";
+    }
+}
+</script>
+
+</body>
+</html>
