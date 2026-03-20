@@ -30,7 +30,11 @@ async function loadEvent() {
     output.innerHTML = "Loading...";
 
     try {
-        const res = await fetch(`https://raid-helper.dev/api/raidplan/${eventId}`);
+        const res = await fetch(
+          `https://api.allorigins.win/raw?url=${encodeURIComponent(
+            `https://raid-helper.dev/api/raidplan/${eventId}`
+          )}`
+        );
         const data = await res.json();
 
         renderRaid(data);
