@@ -54,33 +54,34 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <script>
-      const supabase = supabase.createClient(
-        "https://dyshoztfbpgpanqsyveg.supabase.co",
-        "sb_publishable_gNVVkMuQLdkmeN5U_kJr4w_8qEkn-Jx"
-      );
-
-      document.getElementById("signup-form").addEventListener("submit", async (e) => {
-        e.preventDefault();
-
-        const email = document.getElementById("email").value;
-        const password = document.getElementById("password").value;
-
-        const { data, error } = await supabase.auth.signUp({
-          email,
-          password
-        });
-
-        const msg = document.getElementById("message");
-
-        if (error) {
-          msg.innerText = error.message;
-          msg.className = "text-danger mt-3";
-        } else {
-          msg.innerText = "Check your email to confirm your account.";
-          msg.className = "text-success mt-3";
-        }
+    // Don't reuse the global 'supabase' identifier
+    const supabaseClient = supabase.createClient(
+      "https://dyshoztfbpgpanqsyveg.supabase.co",
+      "sb_publishable_gNVVkMuQLdkmeN5U_kJr4w_8qEkn-Jx"
+    );
+  
+    document.getElementById("signup-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+  
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+  
+      const { data, error } = await supabaseClient.auth.signUp({
+        email,
+        password
       });
-    </script>
+  
+      const msg = document.getElementById("message");
+  
+      if (error) {
+        msg.innerText = error.message;
+        msg.className = "text-danger mt-3";
+      } else {
+        msg.innerText = "Check your email to confirm your account.";
+        msg.className = "text-success mt-3";
+      }
+    });
+  </script>
 
   </body>
 </html>
