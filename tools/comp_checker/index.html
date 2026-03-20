@@ -13,35 +13,55 @@
 <div class="container py-4">
     <h1 class="mb-4">Raid Composition Viewer</h1>
 
-    <!-- Input -->
-    <div class="input-group mb-4">
+    <!-- Event ID Input -->
+    <div class="input-group mb-3">
         <input type="text" id="eventId" class="form-control" placeholder="Enter Event ID">
-        <button class="btn btn-primary" onclick="loadEvent()">Load</button>
+        <button class="btn btn-primary" onclick="showLink()">Get Event Link</button>
     </div>
+
+    <!-- Event Link -->
+    <div id="eventLink" class="mb-3"></div>
+
+    <!-- JSON Input -->
+    <div class="mb-3">
+        <label for="jsonInput" class="form-label">Paste Event JSON here:</label>
+        <textarea id="jsonInput" class="form-control" rows="10" placeholder="Paste JSON here"></textarea>
+    </div>
+    <button class="btn btn-success mb-4" onclick="renderRaidFromTextarea()">Render Raid</button>
 
     <!-- Output -->
     <div id="output"></div>
 </div>
 
 <script>
-async function loadEvent() {
+function showLink() {
     const eventId = document.getElementById("eventId").value.trim();
-    const output = document.getElementById("output");
-    output.innerHTML = "Loading...";
+    const linkDiv = document.getElementById("eventLink");
+    if (!eventId) return;
 
+    linkDiv.innerHTML = `
+        <p>
+            Visit the event page: 
+            <a href="https://raid-helper.dev/raidplan/${eventId}" target="_blank" class="text-info">
+                https://raid-helper.dev/raidplan/${eventId}
+            </a>
+        </p>
+        <p>After copying the JSON from that page, paste it below and click "Render Raid".</p>
+    `;
+}
+
+function renderRaidFromTextarea() {
+    const jsonText = document.getElementById("jsonInput").value.trim();
+    if (!jsonText) return alert("Please paste the JSON first.");
+
+    let data;
     try {
-        const res = await fetch(
-          `https://api.allorigins.win/raw?url=${encodeURIComponent(
-            `https://raid-helper.dev/api/raidplan/${eventId}`
-          )}`
-        );
-        const data = await res.json();
-
-        renderRaid(data);
+        data = JSON.parse(jsonText);
     } catch (err) {
-        output.innerHTML = `<div class="alert alert-danger">Failed to load data</div>`;
-        console.error(err);
+        return alert("Invalid JSON: " + err.message);
     }
+
+    renderRaid(data);
 }
 
 function renderRaid(data) {
@@ -54,24 +74,18 @@ function renderRaid(data) {
     // Group slots by groupNumber
     const groups = {};
     slots.forEach(slot => {
-        if (!groups[slot.groupNumber]) {
-            groups[slot.groupNumber] = [];
-        }
+        if (!groups[slot.groupNumber]) groups[slot.groupNumber] = [];
         groups[slot.groupNumber].push(slot);
     });
 
     // Sort groups numerically
-    const sortedGroupNumbers = Object.keys(groups)
-        .map(Number)
-        .sort((a, b) => a - b);
+    const sortedGroupNumbers = Object.keys(groups).map(Number).sort((a, b) => a - b);
 
     // Determine divider ranges (Charlie, Delta, etc.)
     function getDividerName(groupNum) {
         let current = "Raid";
         for (let i = 0; i < dividers.length; i++) {
-            if (groupNum >= dividers[i].position) {
-                current = dividers[i].name;
-            }
+            if (groupNum >= dividers[i].position) current = dividers[i].name;
         }
         return current;
     }
@@ -82,7 +96,7 @@ function renderRaid(data) {
     sortedGroupNumbers.forEach(groupNum => {
         const dividerName = getDividerName(groupNum);
 
-        // New raid section (Charlie / Delta / etc.)
+        // New raid section
         if (dividerName !== currentDivider) {
             currentDivider = dividerName;
 
@@ -102,8 +116,6 @@ function renderRaid(data) {
         }
 
         const group = groups[groupNum];
-
-        // Sort by slotNumber (1–5)
         group.sort((a, b) => a.slotNumber - b.slotNumber);
 
         const row = document.createElement("div");
@@ -121,7 +133,6 @@ function renderRaid(data) {
                     </div>
                 </div>
             `;
-
             row.appendChild(col);
         });
 
