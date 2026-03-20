@@ -55,39 +55,39 @@
 <!-- Supabase JS -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<script>
-  const supabaseClient = supabase.createClient(
-    "https://dyshoztfbpgpanqsyveg.supabase.co",
-    "sb_publishable_gNVVkMuQLdkmeN5U_kJr4w_8qEkn-Jx"
-  );
-
-  // Redirect if already logged in
-  document.addEventListener("DOMContentLoaded", async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (session) {
-      window.location.href = "/";
-    }
-  });
-
-  // Handle login form
-  document.getElementById("login-form").addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const email = document.getElementById("floatingInput").value;
-    const password = document.getElementById("floatingPassword").value;
-
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password
+  <script>
+    const supabaseClient = supabase.createClient(
+      "https://dyshoztfbpgpanqsyveg.supabase.co",
+      "sb_publishable_gNVVkMuQLdkmeN5U_kJr4w_8qEkn-Jx"
+    );
+  
+    // Redirect if already logged in
+    document.addEventListener("DOMContentLoaded", async () => {
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      if (session) {
+        window.location.href = "/admin/";
+      }
     });
-
-    if (error) {
-      document.getElementById("error-message").innerText = error.message;
-    } else {
-      window.location.href = "/admin/";
-    }
-  });
-</script>
+  
+    // Handle login form
+    document.getElementById("login-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+  
+      const email = document.getElementById("floatingInput").value;
+      const password = document.getElementById("floatingPassword").value;
+  
+      const { error } = await supabaseClient.auth.signInWithPassword({
+        email,
+        password
+      });
+  
+      if (error) {
+        document.getElementById("error-message").innerText = error.message;
+      } else {
+        window.location.href = "/admin/";
+      }
+    });
+  </script>
 
   </body>
 </html>
