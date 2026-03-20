@@ -69,6 +69,8 @@
       const { data, error } = await supabaseClient.auth.signUp({
         email,
         password
+      }, {
+        redirectTo: 'https://ftgguild.com/login'
       });
   
       const msg = document.getElementById("message");
