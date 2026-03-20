@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Guild Roster Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    body {
+      background: #f8fafc;
+      color: #0f172a;
+    }
+
+    .card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    textarea, select, input {
+      background: #ffffff !important;
+      color: #0f172a !important;
+      border: 1px solid #cbd5e1 !important;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container py-4">
+
+  <h1 class="mb-4 text-center">TBC Guild Roster Dashboard</h1>
+
+  <!-- CSV Input -->
+  <div class="card p-3 mb-4" id="inputCard">
+    <h5><a href="https://www.curseforge.com/wow/addons/guildrosterexport">Paste Roster CSV from GuildRosterExport Addon</a></h5>
+    <p class="small text-muted">After installing addon do /guildrosterexport</p>
+
+    <textarea id="csvInput" class="form-control mb-3" rows="6"></textarea>
+
+    <button class="btn btn-primary mb-3" onclick="processCSV()">Load Data</button>
+  </div>
+
+  <!-- Filters -->
+  <div class="card p-3 mb-4">
+    <h5>Filters</h5>
+
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label>Class</label>
+        <select id="classFilter" class="form-select">
+          <option value="">All</option>
+        </select>
+      </div>
+
+      <div class="col-md-6 d-flex align-items-end">
+        <button class="btn btn-success w-100" onclick="applyFilters()">Apply</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="row mb-4" id="statsRow"></div>
+
+  <!-- Charts -->
+  <div class="row">
+
+    <div class="col-lg-4 mb-4">
+      <div class="card p-3">
+        <h5>Class Distribution (Pie)</h5>
+        <canvas id="classChart"></canvas>
+      </div>
+    </div>
+
+    <div class="col-lg-4 mb-4">
+      <div class="card p-3">
+        <h5>Class Distribution (Bar)</h5>
+        <canvas id="classBarChart"></canvas>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="card p-3 mb-4">
+    <h6>Filter by Class / Spec</h6>
+    <div class="mb-3" id="filterSelector"></div>
+
+    <div class="table-responsive">
+      <table class="table table-sm table-striped">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Class</th>
+            <th>Spec</th>
+            <th>Level</th>
+            <th>Rank</th>
+          </tr>
+        </thead>
+        <tbody id="rosterTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<script>
+let roster = [];
+let filteredRoster = [];
+
+let classChart, classBarChart, levelChart;
+
+/* ============================
+   SPEC MAP
+============================ */
+const SPEC_MAP = {
+  "Chammoo": "restoration",
+  "Draindeez": "destruction",
+  "Xulzar": "destruction",
+  "Ðocta": "restoration",
+  "Spanch": "arms",
+  "Yippyskip": "protection",
+  "Orcface": "destruction",
+  "Magicwipes": "arcane",
+  "Alphamalejoe": "restoration",
+  "Hünttärdë": "beastmastery",
+  "Lazyj": "holy",
+  "Biclic": "beastmastery",
+  "Largebingus": "feral",
+  "Oldgrêgg": "beastmastery",
+  "Serania": "restoration",
+  "Elloti": "elemental",
+  "Challanie": "beastmastery",
+  "Dotsdoctor": "shadow",
+  "Zhaeix": "protection",
+  "Hephæstes": "restoration",
+  "Mooglz": "feral",
+  "Nekrosphere": "destruction",
+  "Zugdukk": "destruction",
+  "Appletini": "beastmastery",
+  "Deathduck": "holy",
+  "Grossfck": "holy",
+  "Kaffiene": "arms",
+  "Aurelliah": "arcane",
+  "Gpster": "beastmastery",
+  "Sospicey": "guardian",
+  "Authorizer": "restoration",
+  "Dylfarian": "arcane",
+  "Findout": "combat",
+  "Sixdegrees": "beastmastery",
+  "Elzcommand": "beastmastery",
+  "Aelishe": "restoration",
+  "Greyfivenine": "enhancement",
+  "Kazilgorr": "enhancement",
+  "Unauthorised": "arcane",
+  "Buttlicher": "combat",
+  "Cleattus": "arms",
+  "Darquer": "combat",
+  "Furrywind": "restoration",
+  "Madgethemage": "arcane",
+  "Bladetrinity": "arms",
+  "Chobotitan": "retribution",
+  "Cococola": "affliction",
+  "Criptikal": "arcane",
+  "Devrandom": "survival",
+  "Fleaz": "enhancement",
+  "Jubia": "enhancement",
+  "Mowanza": "restoration",
+  "Prowlarr": "beastmastery",
+  "Smuckinfart": "destruction",
+  "Brèws": "protection",
+  "Diezul": "balance",
+  "Ekiv": "beastmastery",
+  "Filthfinger": "beastmastery",
+  "Fortsham": "elemental",
+  "Hoblee": "arcane",
+  "Bmurda": "protection",
+  "Torquemata": "holy",
+  "Authorized": "protection",
+  "Holypp": "holy",
+  "Scubba": "restoration",
+  "Tikks": "destruction",
+  "Mairea": "holy",
+  "Stunadin": "holy",
+  "Bathtissue": "holy",
+  "Gorothy": "holy",
+  "Desmoo": "protection",
+  "Molzman": "restoration",
+  "Cashes": "guardian",
+  "Nojha": "restoration",
+  "Magrog": "restoration",
+  "Aelishe": "restoration",
+  "Hwacha": "beastmastery",
+  "Bossdirty": "protection",
+  "Barioth": "protection",
+  "Draykon": "protection",
+  "Slicbac": "arms",
+  "OrcKamahl": "arms",
+  "Findout": "combat",
+  "riichardd": "combat",
+  "Corp": "combat",
+  "Shadowsphere": "destruction",
+  "Orcface": "destruction",
+  "Draindeez": "destruction",
+  "Deathicus": "destruction",
+  "Bunlocky": "destruction",
+  "Kazilgorr": "enhancement",
+  "Fleaz": "enhancement",
+  "Greyfivenine": "enhancement",
+  "Frostypp": "holy",
+  "ChibiTitan": "retribution",
+  "Mowanza": "restoration",
+  "Diezul": "balance"
+};
+
+/* ============================
+   CSV Processing
+============================ */
+function processCSV() {
+  const text = document.getElementById("csvInput").value.trim();
+  if (!text) return alert("Paste CSV first");
+
+  document.getElementById("inputCard").style.display = "none";
+
+  const lines = text.split("\n");
+  roster = [];
+
+  for (let line of lines) {
+    line = line.replace(/"/g, "");
+    const parts = line.split(",");
+    if (parts.length < 5) continue;
+
+    const clsLower = parts[4].toLowerCase();
+
+    let spec = SPEC_MAP[parts[0]];
+
+    if (!spec) {
+      if (IDEAL[clsLower]) {
+        spec = Object.keys(IDEAL[clsLower])[0]; 
+      } else {
+        spec = "xxx"; 
+      }
+    }
+
+    roster.push({
+      name: parts[0],
+      rankName: parts[1],
+      rankIndex: Number(parts[2]),
+      level: Number(parts[3]),
+      class: parts[4],
+      spec: spec
+    });
+  }
+
+  populateClassFilter();
+  applyFilters();
+  generateFilters();
+}
+
+/* ============================
+   Filters
+============================ */
+function populateClassFilter() {
+  const select = document.getElementById("classFilter");
+  const classes = [...new Set(roster.map(r => r.class))].sort();
+
+  select.innerHTML = '<option value="">All</option>';
+
+  classes.forEach(c => {
+    const opt = document.createElement("option");
+    opt.value = c;
+    opt.textContent = c;
+    select.appendChild(opt);
+  });
+}
+
+function applyFilters() {
+  const classFilter = document.getElementById("classFilter").value;
+
+  filteredRoster = roster.filter(r =>
+    r.level >= 70 &&
+    (classFilter === "" || r.class === classFilter)
+  );
+
+  renderStats();
+  renderCharts();
+}
+
+/* ============================
+   Radio Filters + Table
+============================ */
+function generateFilters() {
+  const selectorDiv = document.getElementById("filterSelector");
+  selectorDiv.innerHTML = '';
+
+  const grouped = {};
+
+  filteredRoster.forEach(p => {
+    const key = `${p.class} / ${p.spec}`;
+    if (!grouped[key]) grouped[key] = [];
+    grouped[key].push(p);
+  });
+
+  Object.keys(grouped).sort().forEach(key => {
+    const radio = document.createElement('input');
+    radio.type = 'radio';
+    radio.name = 'filter';
+    radio.value = key;
+    radio.onchange = () => renderTable(key);
+
+    const label = document.createElement('label');
+    label.className = 'me-3';
+    label.appendChild(radio);
+    label.appendChild(document.createTextNode(' ' + key));
+
+    selectorDiv.appendChild(label);
+  });
+
+  renderTable(null);
+}
+
+function renderTable(key) {
+  let data = filteredRoster;
+
+  if (key) {
+    const [cls, spec] = key.split(' / ');
+    data = filteredRoster.filter(p => p.class === cls && p.spec === spec);
+  }
+
+  const tbody = document.getElementById("rosterTable");
+  tbody.innerHTML = "";
+
+  data.forEach(p => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${p.name}</td>
+      <td>${p.class}</td>
+      <td>${p.spec}</td>
+      <td>${p.level}</td>
+      <td>${p.rankName}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+/* ============================
+   Stats
+============================ */
+function renderStats() {
+  const row = document.getElementById("statsRow");
+  row.innerHTML = "";
+
+  const total = roster.length;
+  const level70 = filteredRoster.filter(r => r.level === 70).length;
+
+  const stats = [
+    { label: "Players", value: total },
+    { label: "Level 70", value: level70 }
+  ];
+
+  stats.forEach(s => {
+    const div = document.createElement("div");
+    div.className = "col-md-3 mb-3";
+
+    div.innerHTML = `
+      <div class="card p-3 text-center">
+        <h4>${s.value}</h4>
+        <div class="small text-muted">${s.label}</div>
+      </div>
+    `;
+
+    row.appendChild(div);
+  });
+}
+
+/* ============================
+   Charts
+============================ */
+function renderCharts() {
+  const counts = {};
+  filteredRoster.forEach(r => {
+    const c = r.class;
+    counts[c] = (counts[c] || 0) + 1;
+  });
+
+  const labels = Object.keys(counts);
+  const data = Object.values(counts);
+
+  if (classChart) classChart.destroy();
+  if (classBarChart) classBarChart.destroy();
+
+  classChart = new Chart(classChart = document.getElementById("classChart"), {
+    type: "pie",
+    data: { labels, datasets: [{ data }] }
+  });
+
+  classBarChart = new Chart(document.getElementById("classBarChart"), {
+    type: "bar",
+    data: { labels, datasets: [{ data }] }
+  });
+
+  const levels = {};
+  filteredRoster.forEach(r => {
+    levels[r.level] = (levels[r.level] || 0) + 1;
+  });
+
+  const lvlLabels = Object.keys(levels);
+  const lvlData = Object.values(levels);
+
+  if (levelChart) levelChart.destroy();
+
+  levelChart = new Chart(document.getElementById("levelChart"), {
+    type: "bar",
+    data: { labels: lvlLabels, datasets: [{ data: lvlData }] }
+  });
+}
+</script>
+
+</body>
+</html>
