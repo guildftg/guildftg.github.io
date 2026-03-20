@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Raid Composition Viewer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-dark text-light">
+
+<div class="container py-4">
+    <h1 class="mb-4">Raid Composition Viewer</h1>
+
+    <!-- Input -->
+    <div class="input-group mb-4">
+        <input type="text" id="eventId" class="form-control" placeholder="Enter Event ID">
+        <button class="btn btn-primary" onclick="loadEvent()">Load</button>
+    </div>
+
+    <!-- Output -->
+    <div id="output"></div>
+</div>
+
+<script>
+async function loadEvent() {
+    const eventId = document.getElementById("eventId").value.trim();
+    const output = document.getElementById("output");
+    output.innerHTML = "Loading...";
+
+    try {
+        const res = await fetch(`https://raid-helper.dev/api/raidplan/${eventId}`);
+        const data = await res.json();
+
+        renderRaid(data);
+    } catch (err) {
+        output.innerHTML = `<div class="alert alert-danger">Failed to load data</div>`;
+        console.error(err);
+    }
+}
+
+function renderRaid(data) {
+    const output = document.getElementById("output");
+    output.innerHTML = "";
+
+    const slots = data.slots;
+    const dividers = data.dividers || [];
+
+    // Group slots by groupNumber
+    const groups = {};
+    slots.forEach(slot => {
+        if (!groups[slot.groupNumber]) {
+            groups[slot.groupNumber] = [];
+        }
+        groups[slot.groupNumber].push(slot);
+    });
+
+    // Sort groups numerically
+    const sortedGroupNumbers = Object.keys(groups)
+        .map(Number)
+        .sort((a, b) => a - b);
+
+    // Determine divider ranges (Charlie, Delta, etc.)
+    function getDividerName(groupNum) {
+        let current = "Raid";
+        for (let i = 0; i < dividers.length; i++) {
+            if (groupNum >= dividers[i].position) {
+                current = dividers[i].name;
+            }
+        }
+        return current;
+    }
+
+    let currentDivider = null;
+    let container = null;
+
+    sortedGroupNumbers.forEach(groupNum => {
+        const dividerName = getDividerName(groupNum);
+
+        // New raid section (Charlie / Delta / etc.)
+        if (dividerName !== currentDivider) {
+            currentDivider = dividerName;
+
+            const section = document.createElement("div");
+            section.className = "mb-5";
+
+            const title = document.createElement("h3");
+            title.textContent = dividerName + " Group";
+            title.className = "text-info mb-3";
+
+            section.appendChild(title);
+
+            container = document.createElement("div");
+            section.appendChild(container);
+
+            output.appendChild(section);
+        }
+
+        const group = groups[groupNum];
+
+        // Sort by slotNumber (1–5)
+        group.sort((a, b) => a.slotNumber - b.slotNumber);
+
+        const row = document.createElement("div");
+        row.className = "row mb-2";
+
+        group.forEach(player => {
+            const col = document.createElement("div");
+            col.className = "col-md-2 col-6";
+
+            col.innerHTML = `
+                <div class="card bg-secondary text-light p-2 text-center">
+                    <div><strong>${player.name}</strong></div>
+                    <div style="color:${player.color}">
+                        ${player.className} (${player.specName})
+                    </div>
+                </div>
+            `;
+
+            row.appendChild(col);
+        });
+
+        container.appendChild(row);
+    });
+}
+</script>
+
+</body>
+</html>
