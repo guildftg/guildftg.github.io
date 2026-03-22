@@ -2,136 +2,182 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Raid Comparator</title>
-
+<title>Multi Event Comparator</title>
 <style>
 body {
     font-family: Arial, sans-serif;
+    margin: 20px;
     background: #1e1e1e;
-    color: white;
-    padding: 20px;
+    color: #ffffff;
 }
 input {
+    width: 100%;
     padding: 10px;
-    width: 250px;
-    margin-right: 10px;
+    margin-bottom: 10px;
     background: #2a2a2a;
+    color: #ffffff;
     border: 1px solid #444;
-    color: white;
 }
 button {
-    padding: 10px 20px;
+    padding: 8px 15px;
+    font-size: 14px;
     cursor: pointer;
+    margin: 5px 5px 15px 0;
 }
 .output {
     display: flex;
     gap: 20px;
-    margin-top: 20px;
+    flex-wrap: wrap;
 }
 textarea {
     width: 100%;
-    height: 600px;
-    background: #111;
-    color: white;
+    height: 200px;
+    background: #2a2a2a;
+    color: #ffffff;
     border: 1px solid #444;
     padding: 10px;
 }
-.section {
-    margin-top: 20px;
+.box {
+    flex: 1;
+    min-width: 250px;
+}
+.input-block {
+    border: 1px solid #444;
+    padding: 10px;
+    margin-bottom: 10px;
 }
 </style>
 </head>
-
 <body>
 
-<h2>Raid Signup Comparator</h2>
+<h2>Multi Event Signup Comparator</h2>
 
-<input id="event1" placeholder="Event ID #1">
-<input id="event2" placeholder="Event ID #2">
-<button onclick="runCompare()">Compare Events</button>
+<div id="inputs"></div>
+
+<button onclick="addInput()">➕ Add Event</button>
+<button onclick="compare()">Compare All</button>
+
+<h3>Minimum Overlap Threshold</h3>
+<input type="number" id="threshold" value="2" min="1">
 
 <div class="output">
-    <div style="flex:1;">
-        <h3>First Only</h3>
-        <textarea id="firstOnly" readonly></textarea>
+    <div class="box">
+        <h3>Present in ALL</h3>
+        <textarea id="allShared" readonly></textarea>
     </div>
-    <div style="flex:1;">
-        <h3>Mutual</h3>
-        <textarea id="mutual" readonly></textarea>
-    </div>
-    <div style="flex:1;">
-        <h3>Second Only</h3>
-        <textarea id="secondOnly" readonly></textarea>
+    <div class="box">
+        <h3>Present in ≥ Threshold</h3>
+        <textarea id="thresholdShared" readonly></textarea>
     </div>
 </div>
 
+<div id="uniqueOutputs" class="output"></div>
+
 <script>
+let inputCount = 0;
+
+function addInput() {
+    inputCount++;
+
+    const div = document.createElement("div");
+    div.className = "input-block";
+    div.innerHTML = `
+        <h3>Event ${inputCount}</h3>
+        <input class="eventId" placeholder="Enter Event ID">
+        <button onclick="this.parentElement.remove()">❌ Remove</button>
+    `;
+
+    document.getElementById("inputs").appendChild(div);
+}
+
+addInput();
+addInput();
+
+function formatDate(dateStr) {
+    if (!dateStr) return "Unknown Date";
+    const [day, month, year] = dateStr.split("-").map(Number);
+    const date = new Date(year, month - 1, day);
+    return date.toLocaleDateString("en-US", {
+        weekday: "long",
+        month: "long",
+        day: "numeric"
+    });
+}
+
 async function fetchEvent(eventId) {
     const url = `https://raid-helper.dev/api/v2/events/${eventId}`;
-
     const res = await fetch(url);
     if (!res.ok) throw new Error("HTTP " + res.status);
-
     return await res.json();
 }
 
-function extractData(data) {
-    const active = [];
-    const absent = [];
+async function compare() {
+    const inputs = document.querySelectorAll(".eventId");
 
-    if (!data.signUps) return { active, absent };
+    const nameLists = [];
+    const labels = [];
+    const frequency = new Map();
 
-    data.signUps.forEach(s => {
-        if (!s.name) return;
+    for (const input of inputs) {
+        const eventId = input.value.trim();
+        if (!eventId) continue;
 
-        const isAbsent =
-            s.className === "Absence" ||
-            s.roleName === "Absence" ||
-            s.specName === "Absence";
+        try {
+            const data = await fetchEvent(eventId);
 
-        if (isAbsent) absent.push(s.name);
-        else active.push(s.name);
-    });
+            const parsedDate = formatDate(data.date);
 
-    return { active, absent };
-}
+            const names = (data.signUps || [])
+                .map(s => s.name)
+                .filter(n => typeof n === "string");
 
-async function runCompare() {
-    const id1 = document.getElementById("event1").value.trim();
-    const id2 = document.getElementById("event2").value.trim();
+            const set = new Set(names);
 
-    if (!id1 || !id2) {
-        alert("Enter both event IDs");
-        return;
+            nameLists.push(set);
+            labels.push(parsedDate);
+
+            set.forEach(name => {
+                frequency.set(name, (frequency.get(name) || 0) + 1);
+            });
+
+        } catch (e) {
+            console.error("Failed event:", eventId, e);
+        }
     }
 
-    try {
-        const [event1, event2] = await Promise.all([
-            fetchEvent(id1),
-            fetchEvent(id2)
-        ]);
+    const totalLists = nameLists.length;
+    const threshold = parseInt(document.getElementById("threshold").value) || 2;
 
-        const data1 = extractData(event1);
-        const data2 = extractData(event2);
+    const allShared = [...frequency.entries()]
+        .filter(([_, count]) => count === totalLists)
+        .map(([name]) => name)
+        .sort();
 
-        const set1 = new Set(data1.active);
-        const set2 = new Set(data2.active);
+    const thresholdShared = [...frequency.entries()]
+        .filter(([_, count]) => count >= threshold)
+        .map(([name]) => name)
+        .sort();
 
-        const firstOnly = [...set1].filter(n => !set2.has(n)).sort();
-        const mutual = [...set1].filter(n => set2.has(n)).sort();
-        const secondOnly = [...set2].filter(n => !set1.has(n)).sort();
+    document.getElementById("allShared").value = allShared.join("\n");
+    document.getElementById("thresholdShared").value = thresholdShared.join("\n");
 
-        document.getElementById("firstOnly").value = firstOnly.join("\n");
-        document.getElementById("mutual").value = mutual.join("\n");
-        document.getElementById("secondOnly").value = secondOnly.join("\n");
+    const uniqueContainer = document.getElementById("uniqueOutputs");
+    uniqueContainer.innerHTML = "";
 
-        // Absence tracking
-        const absent1 = new Set(data1.absent);
-        const absent2 = new Set(data2.absent);
+    nameLists.forEach((set, index) => {
+        const unique = [...set]
+            .filter(name => frequency.get(name) === 1)
+            .sort();
 
-        const becameAbsent = [...absent2].filter(n => !absent1.has(n));
-        const returned = [...absent1].filter(n => !absent2.has(n));
-        
+        const div = document.createElement("div");
+        div.className = "box";
+        div.innerHTML = `
+            <h3>Unique to ${labels[index]}</h3>
+            <textarea readonly>${unique.join("\n")}</textarea>
+        `;
+        uniqueContainer.appendChild(div);
+    });
+}
 </script>
 
 </body>
