@@ -13,63 +13,469 @@
 <div class="container py-4">
     <h1 class="mb-4">Raid Composition Viewer</h1>
 
-    <!-- Event ID Input -->
-    <div class="input-group mb-3">
-        <input type="text" id="eventId" class="form-control" placeholder="Enter Event ID">
-        <button class="btn btn-primary" onclick="showLink()">Get Event Link</button>
+    <!-- Config + Event Input -->
+    <div class="row g-2 mb-3 align-items-center">
+        <!-- Raid Selector -->
+        <div class="col-auto">
+            <select id="raidType" class="form-select form-select-sm">
+                <option value="">Select Raid</option>
+                <option value="gruulmag">Gruul+Mag</option>
+                <option value="ssc">Serpentshrine Cavern</option>
+                <option value="tk">Tempest Keep</option>
+                <option value="bt">Black Temple</option>
+                <option value="hyjal">Hyjal</option>
+                <option value="sunwell">Sunwell</option>
+            </select>
+        </div>
+
+        <!-- File Input -->
+        <div class="col-auto">
+            <label for="configFile" class="form-label visually-hidden">Config JSON</label>
+            <input class="form-control form-control-sm" type="file" id="configFile" accept=".json">
+        </div>
+
+        <!-- Event ID Input -->
+        <div class="col-auto">
+            <input type="text" id="eventId" class="form-control form-control-sm" placeholder="Enter Event ID">
+        </div>
+
+        <!-- Fetch Data Button -->
+        <div class="col-auto">
+            <button class="btn btn-primary btn-sm" onclick="prepareFetch()">Get Data</button>
+        </div>
     </div>
 
-    <!-- Event Link -->
-    <div id="eventLink" class="mb-3"></div>
-
-    <!-- JSON Input -->
-    <div class="mb-3">
-        <label for="jsonInput" class="form-label">Paste Event JSON here:</label>
-        <textarea id="jsonInput" class="form-control" rows="10" placeholder="Paste JSON here"></textarea>
-    </div>
-    <button class="btn btn-success mb-4" onclick="renderRaidFromTextarea()">Render Raid</button>
+    <!-- Link + Paste Area -->
+    <div id="fetchSection"></div>
 
     <!-- Output -->
-    <div id="output"></div>
+    <div id="output" class="mt-4"></div>
 </div>
 
 <script>
-function showLink() {
-    const eventId = document.getElementById("eventId").value.trim();
-    const linkDiv = document.getElementById("eventLink");
-    if (!eventId) return;
+let CONFIG = null; // will hold loaded JSON
 
-    linkDiv.innerHTML = `
-        <p>
-            Visit the event page: 
-            <a href="https://raid-helper.dev/raidplan/${eventId}" target="_blank" class="text-info">
-                https://raid-helper.dev/raidplan/${eventId}
-            </a>
-        </p>
-        <p>After copying the JSON from that page, paste it below and click "Render Raid".</p>
+// Automatically load config when a file is selected
+document.getElementById("configFile").addEventListener("change", async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const text = await file.text();
+    try {
+        CONFIG = JSON.parse(text);
+        console.log("Config loaded successfully", CONFIG);
+        // Optional: show a success alert
+        const output = document.getElementById("output");
+        output.innerHTML = `<div class="alert alert-success">Config loaded successfully!</div>`;
+    } catch (err) {
+        alert("Invalid JSON file");
+        console.error(err);
+    }
+});
+
+const TANK_SPECS = new Set([
+    "protection1", "guardian", "protection"
+]);
+
+const HEALER_SPECS = new Set([
+    "restoration", "holy", "holy1"
+]);
+
+const warningStatuses = ["late", "tentative", "absent"]; // correct API statuses
+
+function resolveDisplayName(player) {
+    if (!player) return "Empty";
+
+    const id = player.id;
+    const cls = player.className ? player.className.toLowerCase() : null;
+
+    if (!id || !cls) return player.name || "Unknown";
+
+    const nameMap = CONFIG?.nameMap || {};
+    const userEntry = nameMap[id];
+
+    if (!userEntry) return player.name || "Unknown";
+
+    return userEntry[cls] || player.name || "Unknown";
+}
+
+// Fetch event signup data
+async function fetchEvent(eventId) {
+    console.log("fetching signup " + eventId);
+    const url = `https://raid-helper.dev/api/v2/events/${eventId}`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    console.log(res);
+    return await res.json();
+}
+
+async function checkSignupWarnings(eventId, raidCompPlayers) {
+    try {
+        const eventData = await fetchEvent(eventId);
+        const signUps = eventData.signUps || [];
+
+        // Map player names -> status
+        const statusMap = {};
+        signUps.forEach(entry => {
+            statusMap[entry.name] = entry.status || "primary"; // use the actual signup status
+        });
+
+        // Find any players in raid comp who are Late/Tentative/Absent
+        const warnings = raidCompPlayers
+            .filter(player => {
+                const status = statusMap[player.name] || "primary";
+                return ["Late", "Tentative", "Absence"].includes(status);
+            })
+            .map(p => p.name); // map to names for easier display
+
+        return warnings;
+
+    } catch (err) {
+        console.error("Error fetching event signups:", err);
+        alert("Failed to fetch signup data");
+        return [];
+    }
+}
+
+function getRole(player) {
+    if (!player.specName) return "dps";
+
+    const spec = player.specName.toLowerCase();
+
+    if (Array.from(TANK_SPECS).some(t => spec.includes(t))) return "tank";
+    if (Array.from(HEALER_SPECS).some(h => spec.includes(h))) return "healer";
+
+    return "dps";
+}
+
+function analyzeRaid(allSlots) {
+    const result = {
+        tanks: 0,
+        healers: 0,
+        dps: 0,
+        classes: {},
+        specs: {},
+        players: []
+    };
+    function toTitleCase(str) {
+        return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+    }
+
+    allSlots.forEach(p => {
+        const role = getRole(p);
+
+        if (role === "tank") result.tanks++;
+        else if (role === "healer") result.healers++;
+        else result.dps++;
+
+        // normalize class name
+        const cls = p.className ? toTitleCase(p.className.trim()) : "Unknown";
+
+        // count classes
+        result.classes[cls] = (result.classes[cls] || 0) + 1;
+
+        // normalize spec name
+        if (p.specName) {
+            let spec = p.specName.trim().replace(/1$/, ""); // remove trailing 1
+            spec = toTitleCase(spec); // normalize case
+            const key = `${cls}-${spec}`;
+            result.specs[key] = (result.specs[key] || 0) + 1;
+        }
+        result.players.push(p);
+    });
+
+    return result;
+}
+
+function buildImportString(players) {
+    const names = players
+        .map(p => resolveDisplayName(p))
+        .filter(name => name && name !== "Empty");
+
+    return `/rhai import ${names.join(";")}`;
+}
+
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        console.log("Copied:", text);
+    }).catch(err => {
+        console.error("Copy failed", err);
+    });
+}
+
+function validateRaid(analysis) {
+    const checks = [];
+    const raidType = document.getElementById("raidType").value;
+
+    // 1. Role check (3/5/17)
+    const roleValid =
+        analysis.tanks === 3 &&
+        analysis.healers === 5 &&
+        analysis.dps === 17;
+
+    checks.push({
+        name: "Roles (3/5/17)",
+        valid: roleValid,
+        severity: "danger"
+    });
+
+    // 2. Class counts
+    function inRange(val, min, max) {
+        return val >= min && val <= max;
+    }
+
+    let classValid = true;
+    const classRules = CONFIG?.classRules || {};
+    for (const cls in classRules) {
+        const count = analysis.classes[cls] || 0;
+        const [min, max] = classRules[cls];
+        if (!inRange(count, min, max)) classValid = false;
+    }
+
+    checks.push({
+        name: "Class Distribution",
+        valid: classValid,
+        severity: "danger"
+    });
+
+    const hasOfficer = CONFIG?.officers?.length
+        ? analysis.players.some(p => CONFIG.officers.some(([id]) => id === p.id))
+        : true;
+
+    checks.push({ name: "Officer", valid: hasOfficer, severity: "danger" });
+
+    const hasCouncil = CONFIG?.council?.length
+        ? analysis.players.some(p => CONFIG.council.some(([id]) => id === p.id))
+        : true;
+
+    checks.push({ name: "Council", valid: hasCouncil, severity: "danger" });
+
+    // let spousesTogether = true;
+    // (CONFIG?.spousePairs || []).forEach(([a, b]) => {
+    //     const hasA = analysis.players.some(p => p.id === a[0]);
+    //     const hasB = analysis.players.some(p => p.id === b[0]);
+    //     if ((hasA && !hasB) || (!hasA && hasB)) spousesTogether = false;
+    // });
+    // checks.push({ name: "Spouses Together", valid: spousesTogether, severity: "danger" });
+
+    // let friendsTogether = true;
+    // (CONFIG?.friendGroups || []).forEach(group => {
+    //     const present = group.members.filter(([id]) =>
+    //         analysis.players.some(p => p.id === id)
+    //     );
+    //     if (present.length > 0 && present.length < group.members.length) friendsTogether = false;
+    // });
+    // checks.push({ name: "Friend Groups", valid: friendsTogether, severity: "warning" });
+
+    // 4. Spouse check
+    let spousesTogether = true;
+    let spouseIssues = [];
+
+    (CONFIG?.spousePairs || []).forEach(([a, b]) => {
+        const hasA = analysis.players.some(p => p.id === a[0]);
+        const hasB = analysis.players.some(p => p.id === b[0]);
+
+        if ((hasA && !hasB) || (!hasA && hasB)) {
+            spousesTogether = false;
+
+            spouseIssues.push({
+                pair: [a, b],
+                present: hasA ? [a] : [b],
+                missing: hasA ? [b] : [a]
+            });
+        }
+    });
+
+    checks.push({
+        name: "Spouses",
+        valid: spousesTogether,
+        severity: "danger",
+        issues: spouseIssues
+    });
+
+    // 5. Friend Groups (soft warning)
+    let friendsTogether = true;
+    let friendIssues = [];
+
+    (CONFIG?.friendGroups || []).forEach(group => {
+        const present = group.members.filter(([id]) =>
+            analysis.players.some(p => p.id === id)
+        );
+
+        const missing = group.members.filter(([id]) =>
+            !analysis.players.some(p => p.id === id)
+        );
+
+        if (present.length > 0 && present.length < group.members.length) {
+            friendsTogether = false;
+            friendIssues.push({
+                name: group.name,
+                present,
+                missing
+            });
+        }
+    });
+
+    if (raidType === "gruulmag" && CONFIG?.gruulMageTanks?.length) {
+        // Check if at least one of the Mage Tanks is present
+        const anyPresent = CONFIG.gruulMageTanks.some(name =>
+            analysis.players.some(p => p.name === name)
+        );
+
+        checks.push({
+            name: "Mage Tank Present",
+            valid: anyPresent,        // valid if at least one is present
+            severity: "danger",
+            issues: anyPresent ? [] : CONFIG.gruulMageTanks // list all as missing if none present
+        });
+    }
+
+    // Finally push Friend Groups
+    checks.push({
+        name: "Friend Groups",
+        valid: friendsTogether,
+        severity: "warning",
+        issues: friendIssues
+    });
+
+    return checks;
+}
+
+function prepareFetch() {
+    const eventId = document.getElementById("eventId").value.trim();
+    const section = document.getElementById("fetchSection");
+
+    if (!eventId) {
+        section.innerHTML = `<div class="alert alert-warning">Enter an Event ID first</div>`;
+        return;
+    }
+
+    const url = `https://raid-helper.dev/api/raidplan/${eventId}`;
+
+    section.innerHTML = `
+        <div class="alert alert-info">
+            Step 1: <a href="${url}" target="_blank" class="text-warning">Open Raid Data</a><br>
+            Step 2: Copy all JSON<br>
+            Step 3: Paste below and click Render
+        </div>
+
+        <textarea id="jsonInput" class="form-control mb-3" rows="10" placeholder="Paste JSON here..."></textarea>
+
+        <button class="btn btn-success" onclick="handlePaste()">Render Raid</button>
     `;
 }
 
-function renderRaidFromTextarea() {
-    const jsonText = document.getElementById("jsonInput").value.trim();
-    if (!jsonText) return alert("Please paste the JSON first.");
+function handlePaste() {
+    if (!CONFIG) return alert("Load configuration JSON first!");
 
-    let data;
+    const text = document.getElementById("jsonInput").value.trim();
+    if (!text) return alert("Paste raid JSON first!");
+
     try {
-        data = JSON.parse(jsonText);
+        const data = JSON.parse(text);
+        renderRaid(data);
     } catch (err) {
-        return alert("Invalid JSON: " + err.message);
+        console.error(err);
+        alert("Invalid raid JSON!");
     }
-
-    renderRaid(data);
 }
 
-function renderRaid(data) {
+function renderChecks(checks, container, players = []) {
+    const wrapper = document.createElement("div");
+    wrapper.className = "mb-3";
+
+    // Badges
+    checks.forEach(c => {
+        let color = "success";
+        if (!c.valid) {
+            color = c.severity === "warning" ? "warning" : "danger";
+        }
+        const badge = document.createElement("span");
+        badge.className = `badge bg-${color} me-2`;
+        badge.textContent = c.name;
+        wrapper.appendChild(badge);
+    });
+
+    container.appendChild(wrapper);
+
+    if (players.length > 0) {
+        const analysis = analyzeRaid(players); 
+        const list = document.createElement("pre");
+        list.className = "bg-dark text-light p-2 rounded";
+        list.style.whiteSpace = "pre-wrap";
+        const classRules = CONFIG?.classRules || {};
+        const specRules = CONFIG?.specRules || {};
+
+        let text = "";
+        // Add contextual messages
+        checks.forEach(c => {
+            if (c.name === "Roles (3/5/17)" && !c.valid) {
+                const parts = [];
+                if (analysis.tanks < 3) parts.push(`Tanks below 3 (${analysis.tanks})`);
+                if (analysis.healers < 5) parts.push(`Healers below 5 (${analysis.healers})`);
+                if (analysis.dps < 17) parts.push(`DPS below 17 (${analysis.dps})`);
+                if (parts.length) text += `\n⚠ ${parts.join(", ")}\n`;
+            }
+
+            if (c.name === "Class Distribution" && !c.valid) {
+                for (const cls in classRules) {
+                    const [min, max] = classRules[cls];
+                    const count = analysis.classes[cls] || 0;
+                    if (count < min) text += `⚠ Too few ${cls}, min ${min} (${count})\n`;
+                    if (count > max) text += `⚠ Too many ${cls}, max ${max} (${count})\n`;
+                }
+
+                for (const spec in specRules) {
+                    const [min, max] = specRules[spec];
+                    const count = analysis.specs[spec] || 0;
+                    if (min > 0 && count < min) text += `⚠ Too few ${spec}, min ${min} (${count})\n`;
+                    if (count > max) text += `⚠ Too many ${spec}, max ${max} (${count})\n`;
+                }
+            }
+
+            if (c.name === "Spouses Together" && !c.valid) {
+                CONFIG.spousePairs.forEach(([a, b]) => {
+                    const hasA = players.some(p => p.id === a[0]);
+                    const hasB = players.some(p => p.id === b[0]);
+                    if (hasA && !hasB) text += `⚠ ${a[1]} is without their spouse ${b[1]}\n`;
+                    if (!hasA && hasB) text += `⚠ ${b[1]} is without their spouse ${a[1]}\n`;
+                });
+            }
+
+            if (c.name === "Friend Groups" && !c.valid) {
+                CONFIG.friendGroups.forEach(group => {
+                    const present = group.members.filter(([id]) => players.some(p => p.id === id));
+                    if (present.length > 0 && present.length < group.members.length) {
+                        const missing = group.members.filter(([id]) => !present.some(([pid]) => pid === id));
+                        const missingNames = missing.map(m => m[1]).join(", ");
+                        text += `⚠ Friend group "${group.name}" incomplete, missing: ${missingNames}\n`;
+                    }
+                });
+            }
+
+            if (c.name === "Officer Present" && !c.valid) {
+                const missingOfficers = CONFIG.officers.filter(([id]) => !players.some(p => p.id === id));
+                const missingNames = missingOfficers.map(o => o[1]).join(", ");
+                text += `⚠ Missing officer(s): ${missingNames}\n`;
+            }
+
+            if (c.name === "Signup Status" && !c.valid && c.players?.length) {
+                text += `⚠ The following players have not fully signed up: ${c.players.join(", ")}\n`;
+            }
+        });
+
+        list.textContent = text;
+        container.appendChild(list);
+    }
+}
+
+async function renderRaid(data) {
     const output = document.getElementById("output");
     output.innerHTML = "";
 
-    const slots = data.slots;
+    const slots = data.slots || [];
     const dividers = data.dividers || [];
+    dividers.sort((a, b) => a.position - b.position);
 
     // Group slots by groupNumber
     const groups = {};
@@ -78,26 +484,97 @@ function renderRaid(data) {
         groups[slot.groupNumber].push(slot);
     });
 
-    // Sort groups numerically
-    const sortedGroupNumbers = Object.keys(groups).map(Number).sort((a, b) => a - b);
+    const sortedGroupNumbers = Object.keys(groups)
+        .map(Number)
+        .sort((a, b) => a - b);
 
-    // Determine divider ranges (Charlie, Delta, etc.)
     function getDividerName(groupNum) {
-        let current = "Raid";
-        for (let i = 0; i < dividers.length; i++) {
-            if (groupNum >= dividers[i].position) current = dividers[i].name;
-        }
-        return current;
+        const totalGroups = sortedGroupNumbers.length;
+        const midpoint = Math.ceil(totalGroups / dividers.length);
+        return groupNum <= midpoint ? dividers[0].name : dividers[1].name;
+    }
+
+    function normalizeName(name) {
+        return name ? name.trim().toLowerCase() : "";
     }
 
     let currentDivider = null;
     let container = null;
+    let sectionPlayers = [];
 
-    sortedGroupNumbers.forEach(groupNum => {
+    // Pre-fetch signup data once
+    const eventId = document.getElementById("eventId").value.trim();
+    let statusMap = {};
+    if (eventId) {
+        try {
+            const eventData = await fetchEvent(eventId);
+            const signUps = eventData.signUps || [];
+            signUps.forEach(entry => {
+                statusMap[normalizeName(entry.name)] = entry.status || "primary";
+            });
+        } catch (err) {
+            console.error("Failed to fetch signup data:", err);
+        }
+    }
+
+    for (let index = 0; index < sortedGroupNumbers.length; index++) {
+        const groupNum = sortedGroupNumbers[index];
         const dividerName = getDividerName(groupNum);
 
-        // New raid section
+        // New section/divider
         if (dividerName !== currentDivider) {
+            if (sectionPlayers.length > 0 && container) {
+                const analysis = analyzeRaid(sectionPlayers);
+                const checks = validateRaid(analysis);
+
+                // Add signup warnings using cached statusMap
+                if (Object.keys(statusMap).length) {
+                    const warnings = sectionPlayers
+                        .filter(p => warningStatuses.includes(
+                            (statusMap[normalizeName(p.name)] || "primary").toLowerCase()
+                        ))
+                        .map(p => p.name);
+
+                    if (warnings.length > 0) {
+                        checks.push({
+                            name: "Signup Status",
+                            valid: false,
+                            severity: "warning",
+                            players: warnings
+                        });
+                    }
+                }
+
+                renderChecks(checks, container.parentElement, sectionPlayers);
+
+                // Build import string
+                const importString = buildImportString(sectionPlayers);
+
+                // Wrapper row
+                const importWrapper = document.createElement("div");
+                importWrapper.className = "input-group mt-2";
+
+                // Disabled input
+                const input = document.createElement("input");
+                input.type = "text";
+                input.className = "form-control form-control-sm";
+                input.value = importString;
+                input.disabled = true;
+
+                // Copy button
+                const btn = document.createElement("button");
+                btn.className = "btn btn-outline-light btn-sm";
+                btn.textContent = "Copy";
+                btn.onclick = () => copyToClipboard(importString);
+
+                // Assemble
+                importWrapper.appendChild(input);
+                importWrapper.appendChild(btn);
+
+                // Attach under section
+                container.parentElement.appendChild(importWrapper);
+            }
+
             currentDivider = dividerName;
 
             const section = document.createElement("div");
@@ -111,8 +588,9 @@ function renderRaid(data) {
 
             container = document.createElement("div");
             section.appendChild(container);
-
             output.appendChild(section);
+
+            sectionPlayers = [];
         }
 
         const group = groups[groupNum];
@@ -122,14 +600,17 @@ function renderRaid(data) {
         row.className = "row mb-2";
 
         group.forEach(player => {
+            sectionPlayers.push(player);
+
             const col = document.createElement("div");
             col.className = "col-md-2 col-6";
+            const displayName = resolveDisplayName(player);
 
             col.innerHTML = `
                 <div class="card bg-secondary text-light p-2 text-center">
-                    <div><strong>${player.name}</strong></div>
-                    <div style="color:${player.color}">
-                        ${player.className} (${player.specName})
+                    <div><strong>${displayName}</strong></div>
+                    <div style="color:${player.color || "#fff"}">
+                        ${player.className || ""} ${player.specName ? "(" + player.specName + ")" : ""}
                     </div>
                 </div>
             `;
@@ -137,7 +618,59 @@ function renderRaid(data) {
         });
 
         container.appendChild(row);
-    });
+
+        // Render last section
+        if (index === sortedGroupNumbers.length - 1 && sectionPlayers.length > 0 && container) {
+            const analysis = analyzeRaid(sectionPlayers);
+            const checks = validateRaid(analysis);
+
+            if (Object.keys(statusMap).length) {
+                const warnings = sectionPlayers
+                    .filter(p => warningStatuses.includes(
+                        (statusMap[normalizeName(p.name)] || "primary").toLowerCase()
+                    ))
+                    .map(p => p.name);
+
+                if (warnings.length > 0) {
+                    checks.push({
+                        name: "Signup Status",
+                        valid: false,
+                        severity: "warning",
+                        players: warnings
+                    });
+                }
+            }
+
+            renderChecks(checks, container.parentElement, sectionPlayers);
+
+            // Build import string
+            const importString = buildImportString(sectionPlayers);
+
+            // Wrapper row
+            const importWrapper = document.createElement("div");
+            importWrapper.className = "input-group mt-2";
+
+            // Disabled input
+            const input = document.createElement("input");
+            input.type = "text";
+            input.className = "form-control form-control-sm";
+            input.value = importString;
+            input.disabled = true;
+
+            // Copy button
+            const btn = document.createElement("button");
+            btn.className = "btn btn-outline-light btn-sm";
+            btn.textContent = "Copy";
+            btn.onclick = () => copyToClipboard(importString);
+
+            // Assemble
+            importWrapper.appendChild(input);
+            importWrapper.appendChild(btn);
+
+            // Attach under section
+            container.parentElement.appendChild(importWrapper);
+        }
+    }
 }
 </script>
 
