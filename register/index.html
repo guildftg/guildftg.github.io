@@ -41,8 +41,13 @@
         margin-top: 10px;
       }
       .error-message {
-        color: #dc3545;
         font-size: 0.875rem;
+      }
+      .error-message.text-danger {
+        color: #dc3545;
+      }
+      .error-message.text-success {
+        color: #198754;
       }
     </style>
   </head>
@@ -55,8 +60,8 @@
         <h1 class="h3 mb-3 fw-normal">FTG Registration</h1>
 
         <div class="form-floating">
-          <input type="text" class="form-control" id="fullName" placeholder="Full Name" required>
-          <label for="fullName">Full Name</label>
+          <input type="text" class="form-control" id="username" placeholder="Username" required>
+          <label for="username">Username</label>
         </div>
 
         <div class="form-floating">
@@ -75,53 +80,56 @@
         </div>
 
         <button class="w-100 btn btn-lg btn-primary" type="submit">Register</button>
-        <p id="error-message" class="error-message mt-2"></p>
+        <p id="message" class="error-message mt-2"></p>
 
-        <p class="mt-4 mb-3 text-muted" id="copyright">&copy; 2026 FTG</p>
+        <p class="mt-4 mb-3 text-muted">&copy; <span id="year"></span> FTG</p>
+        <p>Already have an account? <a href="/login.html">Login</a></p>
       </form>
     </main>
 
     <!-- Supabase JS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
-    <script>
-      document.getElementById("copyright").innerText = "Copyright © " + new Date().getFullYear() + " FTG";
 
-      const supabaseClient = window.supabase.createClient(
+    <script>
+      document.getElementById("year").innerText = new Date().getFullYear();
+
+      const supabaseClient = supabase.createClient(
         "https://dyshoztfbpgpanqsyveg.supabase.co",
         "sb_publishable_gNVVkMuQLdkmeN5U_kJr4w_8qEkn-Jx"
       );
 
-      // Handle registration form
       document.getElementById("register-form").addEventListener("submit", async (e) => {
         e.preventDefault();
 
-        const fullName = document.getElementById("fullName").value.trim();
+        const username = document.getElementById("username").value.trim();
         const email = document.getElementById("email").value.trim();
         const password = document.getElementById("password").value;
         const confirmPassword = document.getElementById("confirmPassword").value;
-
-        const errorMsg = document.getElementById("error-message");
-        errorMsg.innerText = "";
+        const msg = document.getElementById("message");
+        msg.innerText = "";
+        msg.className = "error-message";
 
         if (password !== confirmPassword) {
-          errorMsg.innerText = "Passwords do not match.";
+          msg.innerText = "Passwords do not match.";
+          msg.classList.add("text-danger");
           return;
         }
 
-        const { error, data } = await supabaseClient.auth.signUp({
+        // Sign up using the working functionality
+        const { data, error } = await supabaseClient.auth.signUp({
           email,
           password,
-          options: {
-            data: { full_name: fullName }
-          }
+          options: { data: { username: username } }
+        }, {
+          redirectTo: 'https://ftgguild.com/login'
         });
 
         if (error) {
-          errorMsg.innerText = error.message;
+          msg.innerText = error.message;
+          msg.classList.add("text-danger");
         } else {
-          alert("Registration successful! Please check your email to confirm your account.");
-          window.location.href = "/login.html"; // redirect to login page
+          msg.innerText = "Check your email to confirm your account.";
+          msg.classList.add("text-success");
         }
       });
     </script>
