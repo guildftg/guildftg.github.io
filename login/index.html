@@ -67,14 +67,17 @@
         <button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
         <p id="error-message" class="error-message mt-2"></p>
 
-        <p class="mt-5 mb-3 text-muted">&copy; FTG Guild</p>
+        <p class="mt-5 mb-3 text-muted" id="copyright">&copy; 2026 FTG</p>
       </form>
     </main>
 
     <!-- Supabase JS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
+    
     <script>
+
+      document.getElementById("copyright").innerHTML = "Copyright © " + new Date().getFullYear() + " FTG.";
+      
       const supabaseClient = window.supabase.createClient(
         "https://dyshoztfbpgpanqsyveg.supabase.co",
         "sb_publishable_gNVVkMuQLdkmeN5U_kJr4w_8qEkn-Jx"
