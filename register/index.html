@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>FTG Registration</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="icon" href="../assets/images/ftg_logo.png" type="image/png">
+
+    <style>
+      html, body {
+        height: 100%;
+      }
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding-top: 40px;
+        padding-bottom: 40px;
+        background-color: #f8f9fa;
+      }
+      .form-register {
+        width: 100%;
+        max-width: 400px;
+        padding: 20px;
+        margin: auto;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      }
+      .form-register .form-floating:focus-within {
+        z-index: 2;
+      }
+      .form-register input {
+        margin-bottom: 10px;
+        border-radius: 0.375rem;
+      }
+      .form-register button {
+        margin-top: 10px;
+      }
+      .error-message {
+        color: #dc3545;
+        font-size: 0.875rem;
+      }
+    </style>
+  </head>
+
+  <body class="text-center">
+    
+    <main class="form-register">
+      <form id="register-form">
+        <img class="mb-4 rounded-circle" src="../assets/images/ftg_logo.png" alt="FTG Logo" width="128" height="128">
+        <h1 class="h3 mb-3 fw-normal">FTG Registration</h1>
+
+        <div class="form-floating">
+          <input type="text" class="form-control" id="fullName" placeholder="Full Name" required>
+          <label for="fullName">Full Name</label>
+        </div>
+
+        <div class="form-floating">
+          <input type="email" class="form-control" id="email" placeholder="name@example.com" required>
+          <label for="email">Email address</label>
+        </div>
+
+        <div class="form-floating">
+          <input type="password" class="form-control" id="password" placeholder="Password" required>
+          <label for="password">Password</label>
+        </div>
+
+        <div class="form-floating">
+          <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm Password" required>
+          <label for="confirmPassword">Confirm Password</label>
+        </div>
+
+        <button class="w-100 btn btn-lg btn-primary" type="submit">Register</button>
+        <p id="error-message" class="error-message mt-2"></p>
+
+        <p class="mt-4 mb-3 text-muted" id="copyright">&copy; 2026 FTG</p>
+      </form>
+    </main>
+
+    <!-- Supabase JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <script>
+      document.getElementById("copyright").innerText = "Copyright © " + new Date().getFullYear() + " FTG";
+
+      const supabaseClient = window.supabase.createClient(
+        "https://dyshoztfbpgpanqsyveg.supabase.co",
+        "sb_publishable_gNVVkMuQLdkmeN5U_kJr4w_8qEkn-Jx"
+      );
+
+      // Handle registration form
+      document.getElementById("register-form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const fullName = document.getElementById("fullName").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value;
+        const confirmPassword = document.getElementById("confirmPassword").value;
+
+        const errorMsg = document.getElementById("error-message");
+        errorMsg.innerText = "";
+
+        if (password !== confirmPassword) {
+          errorMsg.innerText = "Passwords do not match.";
+          return;
+        }
+
+        const { error, data } = await supabaseClient.auth.signUp({
+          email,
+          password,
+          options: {
+            data: { full_name: fullName }
+          }
+        });
+
+        if (error) {
+          errorMsg.innerText = error.message;
+        } else {
+          alert("Registration successful! Please check your email to confirm your account.");
+          window.location.href = "/login.html"; // redirect to login page
+        }
+      });
+    </script>
+
+  </body>
+</html>
