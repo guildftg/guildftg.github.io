@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Read Admin Data</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="text-center">
+
+  <h1>Admin Data</h1>
+  <p id="status"></p>
+  <ul id="data-list" class="list-group w-50 mx-auto"></ul>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const supabaseClient = supabase.createClient(
+      "https://dyshoztfbpgpanqsyveg.supabase.co",
+      "sb_publishable_gNVVkMuQLdkmeN5U_kJr4w_8qEkn-Jx"
+    );
+
+    async function loadData() {
+      console.log("=== LOAD ADMIN DATA ===");
+
+      const { data: { session } } = await supabaseClient.auth.getSession();
+
+      if (!session) {
+        document.getElementById('status').innerText = "Not logged in";
+        return;
+      }
+
+      console.log("User:", session.user.email);
+
+      const { data, error } = await supabaseClient
+        .from('admin_data')
+        .select('*');
+
+      console.log("Query result:", data);
+      console.log("Query error:", error);
+
+      if (error) {
+        document.getElementById('status').innerText = "Error loading data";
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        document.getElementById('status').innerText =
+          "No data returned (likely not an admin)";
+        return;
+      }
+
+      document.getElementById('status').innerText = "Admin data loaded:";
+
+      const list = document.getElementById('data-list');
+
+      data.forEach(row => {
+        const li = document.createElement('li');
+        li.className = "list-group-item";
+        li.innerText = row.secret;
+        list.appendChild(li);
+      });
+    }
+
+    loadData();
+  </script>
+
+</body>
+</html>
