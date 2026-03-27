@@ -1,10 +1,251 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <title>My First Site</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="FTG Guild">
+    <title>Home - FTG</title>
+    <title>Home - FTG Guild</title>
+    <link href="assets/css/custom.css" rel="stylesheet">
+    <link href="assets/css/branding.css" rel="stylesheet">
+    <link rel="icon" href="assets/images/ftg_logo.png" type="image/png">
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/css/product.css" rel="stylesheet">
+    <style>
+    .bd-placeholder-img {
+      font-size: 1.125rem;
+      text-anchor: middle;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      user-select: none;
+    }
+    @media (min-width: 768px) {
+      .bd-placeholder-img-lg {
+        font-size: 3.5rem;
+      }
+    }
+    .main-box {
+      width: 80%;
+      height: 300px;
+      border-radius: 21px 21px 0 0;
+      overflow: hidden;
+      margin: 0 auto;
+    }
+    .main-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .d-md-flex > div {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between; 
+    }
+    .background-image {
+        background-image: url('assets/images/splash.png');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        width: 100%;
+        min-height: 400px;
+        filter: brightness(1);
+    }
+    .background-image.responsive {
+        height: 50vh;
+        max-height: 600px;
+    }
+    .background-image::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.3);
+        z-index: 1;
+    }
+    .background-image > .col-md-5 {
+        position: relative;
+        z-index: 2;
+    }
+    .background-image h4,
+    .background-image p {
+        text-shadow: 0 2px 6px rgba(0,0,0,0.6);
+    }
+    </style>
   </head>
   <body>
-    <h1>Hello World!</h1>
-    <p>This is my GitHub Pages site.</p>
+    <header class="sticky-top py-1">
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+          <a href="/">
+            <img class="navbar-brand logo px-3 rounded-circle" style="max-height: 90px" src="assets/images/ftg_logo.png" alt="FTG Guild Logo">
+          </a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto">
+              <li class="nav-item">
+                <a class="nav-link active" href="#aboutUs">About</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/construction" target="_blank">Loot System</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/construction" target="_blank">Raid Structure</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="https://discord.gg/BXNDTVCyhf">Join</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </header>
+    <main>
+      <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-light background-image responsive">
+        <div class="col-md-5 p-lg-5 mx-auto my-5">
+          <h4 class="display-4 fw-normal text-light">Welcome to FTG</h4>
+          <p class="lead fw-normal text-light mt-3">A stable, performance-driven raiding guild where consistency, preparation, and community come together to help every player thrive.</p>
+          <div class="mt-3">
+            <a class="btn btn-lg text-light btn-brand-tertiary" href="https://discord.gg/BXNDTVCyhf">Join Now</a>
+          </div>
+        </div>
+      </div>
+      <div class="d-md-flex flex-md-equal w-100 my-md-3 ps-md-3">
+        <div class="me-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center text-white overflow-hidden branding-primary-bg">
+          <div class="my-3 py-3">
+            <h2 class="display-5">Performance Driven</h2>
+            <p>We prioritize preparation, execution, and steady improvement.</p>
+            <p>Every player is expected to contribute meaningfully to raid success, ensuring each group operates efficiently and reliably.</p>
+          </div>
+          <div class="bg-body shadow-sm mx-auto main-box" style="width: 80%; height: 300px; border-radius: 21px 21px 0 0;">
+            <img class="main-box-image" src="assets/images/performance_driven.webp" alt="Image Performance Driven">
+          </div>
+        </div>
+        <div class="me-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center text-white overflow-hidden branding-secondary-bg">
+          <div class="my-3 p-3">
+            <h2 class="display-5">Community First</h2>
+            <p>FTG is more than a raid team — we are a long-term gaming community.</p>
+            <p>Respect, reliability, and a positive attitude are just as important as skill and performance.</p>
+          </div>
+          <div class="bg-body shadow-sm mx-auto main-box" style="width: 80%; height: 300px; border-radius: 21px 21px 0 0;">
+            <img class="main-box-image" src="assets/images/community_first.webp" alt="Image Community First">
+          </div>
+        </div>
+      </div>
+      <div class="d-md-flex flex-md-equal w-100 my-md-3 ps-md-3">
+        <div class="me-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center overflow-hidden branding-tertiary-bg">
+          <div class="my-3 p-3">
+            <h2 class="display-5">Loot System</h2>
+            <p>Our EP/GP system is consistent, rewards effort, attendance, and meaningful contribution.</p>
+            <ul class="list-unstyled">
+              <li>Effort Points (EP): earned for raid participation and guild contributions</li>
+              <li>Gear Points (GP): track loot received</li>
+              <li>Priority Ratio (PR): EP ÷ GP determines loot priority</li>
+            </ul>
+          </div>
+          <div class="bg-body shadow-sm mx-auto main-box" style="width: 80%; height: 300px; border-radius: 21px 21px 0 0;">
+            <img class="main-box-image" src="assets/images/loot_system.png" alt="Image Loot System">
+          </div>
+        </div>
+        <div class="me-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center text-white overflow-hidden branding-primary-bg">
+          <div class="my-3 py-3">
+            <h2 class="display-5">Fair &amp; Transparent</h2>
+            <p>Loot is distributed based on contribution and clear rules.</p>
+            <ul class="list-unstyled">
+              <li>Priority reflects effort and need, not favoritism</li>
+              <li>Rules are consistent across all raid teams</li>
+              <li>Tiered auctions and soft reserve give players control while maintaining fairness</li>
+            </ul>
+          </div>
+          <div class="bg-body shadow-sm mx-auto main-box" style="width: 80%; height: 300px; border-radius: 21px 21px 0 0;">
+            <img class="main-box-image" src="assets/images/fair_transparent.png" alt="Image Fair & Transparent">
+          </div>
+        </div>
+      </div>
+      <div class="d-md-flex flex-md-equal w-100 my-md-3 ps-md-3">
+        <div class="me-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center text-white overflow-hidden branding-secondary-bg">
+          <div class="my-3 p-3">
+            <h2 class="display-5">Raid Structure</h2>
+            <p>A 25-man progression core is supported by multiple 10-man teams, allowing for both performance-driven progression and development opportunities for new or returning players.</p>
+          </div>
+          <div class="bg-body shadow-sm mx-auto main-box" style="width: 80%; height: 300px; border-radius: 21px 21px 0 0;">
+            <img class="main-box-image" src="assets/images/raid_structure.png" alt="Image Raid Structure">
+          </div>
+        </div>
+        <div class="me-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center overflow-hidden branding-tertiary-bg">
+          <div class="my-3 py-3">
+            <h2 class="display-5">Leadership</h2>
+            <p>Our officer team has clear responsibilities, maintains accountability, and ensures raids and guild systems operate smoothly. Leadership is structured to support both players and long-term guild stability.</p>
+          </div>
+          <div class="bg-body shadow-sm mx-auto main-box" style="width: 80%; height: 300px; border-radius: 21px 21px 0 0;">
+            <img class="main-box-image" src="assets/images/leadership.png" alt="Image Leadership">
+          </div>
+        </div>
+      </div>
+      <div class="d-md-flex flex-md-equal w-100 my-md-3 ps-md-3">
+        <div class="me-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center text-white  overflow-hidden branding-primary-bg">
+          <div class="my-3 p-3">
+            <h2 class="display-5">Player Development</h2>
+            <p>We invest in players who want to improve, take on responsibility, and push content seriously. Guidance, mentoring, and constructive feedback are available for those willing to put in the work.</p>
+          </div>
+          <div class="bg-body shadow-sm mx-auto main-box" style="width: 80%; height: 300px; border-radius: 21px 21px 0 0;">
+            <img class="main-box-image" src="assets/images/player_development.png" alt="Image Player Development">
+          </div>
+        </div>
+        <div class="me-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center text-white overflow-hidden branding-secondary-bg">
+          <div class="my-3 py-3">
+            <h2 class="display-5">Expectations</h2>
+            <p>Come prepared, communicate clearly, and respect the team. Reliability, preparation, and a positive approach to raids ensure everyone can perform and enjoy the game together.</p>
+          </div>
+          <div class="bg-body shadow-sm mx-auto main-box" style="width: 80%; height: 300px; border-radius: 21px 21px 0 0;">
+            <img class="main-box-image" src="assets/images/expectations.png" alt="Image Expectations">
+          </div>
+        </div>
+      </div>
+      <a href="#" class="btn btn-primary scroll-to-top" id="return-to-top">↑</a>
+    </main>
+    <footer class="container mt-5 py-5">
+      <div class="row">
+        <div class="col-md-4">
+          <img class="logo rounded-circle" style="max-height: 100px" src="assets/images/ftg_logo.png" alt="FTG Logo">
+          <small class="d-block text-muted mt-3">
+            © 2026 FTG Guild
+            <a href="/login" class="text-muted ms-2" style="text-decoration: none;">Login</a>
+          </small>
+        </div>
+        <div id="aboutUs" class="col-md-8">
+          <h3>About FTG</h3>
+          <p>
+            FTG is a raiding guild built on stability, consistency, and shared responsibility. We combine structured leadership, intentional raid systems, and a supportive community culture to create an environment where players can perform, improve, and enjoy the game without unnecessary friction. Our focus is on reliable execution, clear expectations, and maintaining a guild where effort, preparation, and respect are recognized and rewarded.
+          </p>
+        </div>
+      </div>
+    </footer>
+    <script>
+    document.getElementById("copyright").innerHTML =
+        "Copyright © " + new Date().getFullYear() + " FTG";
+
+        </script>
+        <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var btn = document.getElementById("return-to-top");
+
+        window.addEventListener("scroll", function() {
+            btn.style.display =
+                (document.documentElement.scrollTop > 20) ? "block" : "none";
+        });
+
+        btn.addEventListener("click", function(e) {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+    });
+    </script>
+    <script src="assets/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>
