@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Write Admin Data</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="text-center">
+
+  <h1>Write to Admin Data</h1>
+  <p id="status"></p>
+
+  <div class="w-50 mx-auto">
+    <input type="text" id="secret-input" class="form-control mb-3" placeholder="Enter secret text" />
+    <button id="submit" class="btn btn-primary">Submit</button>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const supabaseClient = supabase.createClient(
+      "https://dyshoztfbpgpanqsyveg.supabase.co",
+      "sb_publishable_gNVVkMuQLdkmeN5U_kJr4w_8qEkn-Jx"
+    );
+
+    async function checkAdmin() {
+      const { data: { session } } = await supabaseClient.auth.getSession();
+
+      if (!session) {
+        document.getElementById('status').innerText = "Not logged in";
+        return false;
+      }
+
+      const userId = session.user.id;
+
+      const { data: profile, error } = await supabaseClient
+        .from('profiles')
+        .select('role')
+        .eq('id', userId)
+        .maybeSingle();
+
+      if (!profile || profile.role?.trim().toLowerCase() !== 'admin') {
+        document.getElementById('status').innerText =
+          "Access denied: Admins only";
+        return false;
+      }
+
+      document.getElementById('status').innerText = "Admin verified, you can write data.";
+      return true;
+    }
+
+    async function submitData() {
+      const secret = document.getElementById('secret-input').value.trim();
+      if (!secret) return;
+
+      const { data, error } = await supabaseClient
+        .from('admin_data')
+        .insert({ secret });
+
+      if (error) {
+        document.getElementById('status').innerText = "Error inserting data: " + error.message;
+        console.error(error);
+        return;
+      }
+
+      document.getElementById('status').innerText = "Data inserted successfully!";
+      console.log("Inserted data:", data);
+      document.getElementById('secret-input').value = '';
+    }
+
+    // Setup
+    checkAdmin().then(isAdmin => {
+      if (isAdmin) {
+        document.getElementById('submit').addEventListener('click', submitData);
+      } else {
+        document.getElementById('submit').disabled = true;
+      }
+    });
+  </script>
+
+</body>
+</html>
