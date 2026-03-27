@@ -22,37 +22,56 @@
   );
 
   async function checkAuth() {
-    const { data: { session } } = await supabaseClient.auth.getSession();
+    console.log("=== AUTH CHECK START ===");
+
+    const { data: { session }, error: sessionError } =
+      await supabaseClient.auth.getSession();
+
+    console.log("Session:", session);
+    console.log("Session Error:", sessionError);
 
     if (!session) {
-      // Not logged in → redirect
-      window.location.href = '/login';
+      console.log("❌ No session (user not logged in)");
+      document.getElementById('user-email').innerText =
+        "Not logged in";
       return;
     }
 
     const userId = session.user.id;
+    console.log("User ID:", userId);
+    console.log("User Email:", session.user.email);
 
-    // 🔒 Check role in profiles table
+    // 🔍 Query profile
     const { data: profile, error } = await supabaseClient
       .from('profiles')
-      .select('role')
+      .select('id, role')
       .eq('id', userId)
-      .single();
+      .maybeSingle();
 
-    if (error || !profile) {
-      console.error('Profile fetch error:', error);
-      window.location.href = '/login';
+    console.log("Profile result:", profile);
+    console.log("Profile error:", error);
+
+    if (error) {
+      console.log("❌ Profile query failed");
       return;
     }
 
-    if (profile.role !== 'admin') {
-      // 🚫 Not an admin → block access
-      alert('Access denied: Admins only.');
-      window.location.href = '/';
+    if (!profile) {
+      console.log("❌ No profile found for this user");
       return;
     }
 
-    // ✅ Authorized admin
+    console.log("Role from DB:", profile.role);
+
+    if (profile.role?.trim().toLowerCase() !== 'admin') {
+      console.log("❌ NOT ADMIN");
+      document.getElementById('user-email').innerText =
+        `Logged in as: ${session.user.email} (NOT ADMIN)`;
+      return;
+    }
+
+    console.log("✅ ADMIN VERIFIED");
+
     document.getElementById('user-email').innerText =
       `Logged in as: ${session.user.email} (Admin)`;
   }
@@ -61,11 +80,11 @@
 
   // Logout button
   document.getElementById('logout').addEventListener('click', async () => {
+    console.log("Logging out...");
     await supabaseClient.auth.signOut();
-    window.location.href = '/login';
+    console.log("Logged out");
   });
 </script>
-  </script>
 
 </body>
 </html>
