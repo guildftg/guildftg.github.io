@@ -128,8 +128,12 @@ async function compare() {
             const parsedDate = formatDate(data.date);
 
             const names = (data.signUps || [])
-                .map(s => s.name)
-                .filter(n => typeof n === "string");
+                .filter(s =>
+                    typeof s.name === "string" &&
+                    s.status === "primary" &&
+                    !["Tentative", "Late", "Absence"].includes(s.className)
+                )
+                .map(s => s.name);
 
             const set = new Set(names);
 
