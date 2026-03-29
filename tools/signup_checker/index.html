@@ -111,6 +111,15 @@ async function fetchEvent(eventId) {
     return await res.json();
 }
 
+function isRealSignup(s) {
+    return (
+        typeof s.name === "string" &&
+        s.roleName &&
+        s.specName &&
+        !["Tentative", "Late", "Absence", "Bench"].includes(s.className)
+    );
+}
+
 async function compare() {
     const inputs = document.querySelectorAll(".eventId");
 
@@ -124,23 +133,18 @@ async function compare() {
 
         try {
             const data = await fetchEvent(eventId);
-
             const parsedDate = formatDate(data.date);
 
-            const names = (data.signUps || [])
-                .filter(s =>
-                    typeof s.name === "string" &&
-                    s.status === "primary" &&
-                    !["Tentative", "Late", "Absence"].includes(s.className)
-                )
+            const validNames = (data.signUps || [])
+                .filter(isRealSignup)
                 .map(s => s.name);
 
-            const set = new Set(names);
+            const validSet = new Set(validNames);
 
-            nameLists.push(set);
+            nameLists.push(validSet);
             labels.push(parsedDate);
 
-            set.forEach(name => {
+            validSet.forEach(name => {
                 frequency.set(name, (frequency.get(name) || 0) + 1);
             });
 
@@ -168,19 +172,35 @@ async function compare() {
     const uniqueContainer = document.getElementById("uniqueOutputs");
     uniqueContainer.innerHTML = "";
 
-    nameLists.forEach((set, index) => {
-        const unique = [...set]
-            .filter(name => frequency.get(name) === 1)
-            .sort();
+    for (let i = 0; i < inputs.length; i++) {
+        const eventId = inputs[i].value.trim();
+        if (!eventId) continue;
 
-        const div = document.createElement("div");
-        div.className = "box";
-        div.innerHTML = `
-            <h3>Unique to ${labels[index]}</h3>
-            <textarea readonly>${unique.join("\n")}</textarea>
-        `;
-        uniqueContainer.appendChild(div);
-    });
+        try {
+            const data = await fetchEvent(eventId);
+
+            const eventNames = (data.signUps || [])
+                .filter(isRealSignup)
+                .map(s => s.name);
+
+            const eventSet = new Set(eventNames);
+
+            const unique = [...eventSet]
+                .filter(name => frequency.get(name) === 1)
+                .sort();
+
+            const div = document.createElement("div");
+            div.className = "box";
+            div.innerHTML = `
+                <h3>Unique to ${labels[i]}</h3>
+                <textarea readonly>${unique.join("\n")}</textarea>
+            `;
+            uniqueContainer.appendChild(div);
+
+        } catch (e) {
+            console.error("Failed unique calc:", eventId, e);
+        }
+    }
 }
 </script>
 
