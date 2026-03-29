@@ -114,9 +114,6 @@ let filteredRoster = [];
 
 let classChart, classBarChart, levelChart;
 
-/* ============================
-   SPEC MAP
-============================ */
 const SPEC_MAP = {
   "Chammoo": "restoration",
   "Draindeez": "destruction",
@@ -217,42 +214,71 @@ const SPEC_MAP = {
   "Diezul": "balance"
 };
 
-/* ============================
-   CSV Processing
-============================ */
+function parseCSVLine(line) {
+  const result = [];
+  let current = '';
+  let inQuotes = false;
+
+  for (let i = 0; i < line.length; i++) {
+    const char = line[i];
+
+    if (char === '"') {
+      if (inQuotes && line[i + 1] === '"') {
+        current += '"';
+        i++;
+      } else {
+        inQuotes = !inQuotes;
+      }
+    } else if (char === ',' && !inQuotes) {
+      result.push(current);
+      current = '';
+    } else {
+      current += char;
+    }
+  }
+
+  result.push(current);
+  return result.map(v => v.trim());
+}
+
 function processCSV() {
   const text = document.getElementById("csvInput").value.trim();
   if (!text) return alert("Paste CSV first");
 
   document.getElementById("inputCard").style.display = "none";
 
-  const lines = text.split("\n");
+  const lines = text.split(/\r?\n/);
   roster = [];
 
   for (let line of lines) {
-    line = line.replace(/"/g, "");
-    const parts = line.split(",");
+    if (!line.trim()) continue;
+
+    const parts = parseCSVLine(line);
     if (parts.length < 5) continue;
 
-    const clsLower = parts[4].toLowerCase();
+    if (parts[0].toLowerCase() === "name") continue;
 
-    let spec = SPEC_MAP[parts[0]];
+    const name = parts[0];
+    const rankName = parts[1];
+    const rankIndex = Number(parts[2]) || 0;
+    const level = Number(parts[3]) || 0;
+    const playerClass = parts[4];
+
+    const clsLower = playerClass.toLowerCase();
+
+    let spec = SPEC_MAP[name];
 
     if (!spec) {
-      if (IDEAL[clsLower]) {
-        spec = Object.keys(IDEAL[clsLower])[0]; 
-      } else {
-        spec = "xxx"; 
-      }
+      spec = "unknown";
     }
 
     roster.push({
-      name: parts[0],
-      rankName: parts[1],
-      rankIndex: Number(parts[2]),
-      level: Number(parts[3]),
-      class: parts[4],
-      spec: spec
+      name,
+      rankName,
+      rankIndex,
+      level,
+      class: playerClass,
+      spec
     });
   }
 
@@ -261,9 +287,6 @@ function processCSV() {
   generateFilters();
 }
 
-/* ============================
-   Filters
-============================ */
 function populateClassFilter() {
   const select = document.getElementById("classFilter");
   const classes = [...new Set(roster.map(r => r.class))].sort();
@@ -288,11 +311,9 @@ function applyFilters() {
 
   renderStats();
   renderCharts();
+  generateFilters();
 }
 
-/* ============================
-   Radio Filters + Table
-============================ */
 function generateFilters() {
   const selectorDiv = document.getElementById("filterSelector");
   selectorDiv.innerHTML = '';
@@ -347,9 +368,6 @@ function renderTable(key) {
   });
 }
 
-/* ============================
-   Stats
-============================ */
 function renderStats() {
   const row = document.getElementById("statsRow");
   row.innerHTML = "";
@@ -377,9 +395,6 @@ function renderStats() {
   });
 }
 
-/* ============================
-   Charts
-============================ */
 function renderCharts() {
   const counts = {};
   filteredRoster.forEach(r => {
@@ -393,7 +408,7 @@ function renderCharts() {
   if (classChart) classChart.destroy();
   if (classBarChart) classBarChart.destroy();
 
-  classChart = new Chart(classChart = document.getElementById("classChart"), {
+  classChart = new Chart(document.getElementById("classChart"), {
     type: "pie",
     data: { labels, datasets: [{ data }] }
   });
@@ -401,21 +416,6 @@ function renderCharts() {
   classBarChart = new Chart(document.getElementById("classBarChart"), {
     type: "bar",
     data: { labels, datasets: [{ data }] }
-  });
-
-  const levels = {};
-  filteredRoster.forEach(r => {
-    levels[r.level] = (levels[r.level] || 0) + 1;
-  });
-
-  const lvlLabels = Object.keys(levels);
-  const lvlData = Object.values(levels);
-
-  if (levelChart) levelChart.destroy();
-
-  levelChart = new Chart(document.getElementById("levelChart"), {
-    type: "bar",
-    data: { labels: lvlLabels, datasets: [{ data: lvlData }] }
   });
 }
 </script>
