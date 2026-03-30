@@ -87,7 +87,10 @@ function resolveDisplayName(player) {
     if (!player) return "Empty";
 
     const id = player.id;
-    const cls = player.className ? player.className.toLowerCase() : null;
+    // const cls = player.className ? player.className.toLowerCase() : null;
+    const cls = player.className
+        ? player.className.toLowerCase().replace(/\s+/g, "")
+        : null;
 
     if (!id || !cls) return player.name || "Unknown";
 
@@ -439,6 +442,18 @@ function renderChecks(checks, container, players = []) {
                     if (min > 0 && count < min) text += `⚠ Too few ${spec}, min ${min} (${count})\n`;
                     if (count > max) text += `⚠ Too many ${spec}, max ${max} (${count})\n`;
                 }
+            }
+
+            if (c.name === "MD Lead" && !c.valid) {
+                text += `⚠ Missing MD Lead (${CONFIG.mdLeads.join(", ")})\n`;
+            }
+            
+            if (c.name === "Loot Master" && !c.valid) {
+                text += `⚠ Missing Loot Master (${CONFIG.lootMasters.join(", ")})\n`;
+            }
+            
+            if (c.name === "Raid Lead" && !c.valid) {
+                text += `⚠ Missing Raid Lead (${CONFIG.raidLeads.join(", ")})\n`;
             }
 
             // if (c.name === "Spouses Together" && !c.valid) {
