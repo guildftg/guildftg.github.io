@@ -333,6 +333,26 @@ function validateRaid(analysis) {
         });
     }
 
+    if (raidType === "gruulmag" && CONFIG?.magClickers?.length) {
+        const playerNames = analysis.players.map(p => resolveDisplayName(p));
+    
+        const presentClickers = CONFIG.magClickers.filter(name =>
+            playerNames.includes(name)
+        );
+    
+        const count = presentClickers.length;
+    
+        checks.push({
+            name: `Mag Clickers (${count}/5)`,
+            valid: count >= 5,
+            severity: "warning",
+            issues: count >= 5 ? [] : {
+                missing: CONFIG.magClickers.filter(name => !playerNames.includes(name)),
+                present: presentClickers
+            }
+        });
+    }
+
     // Finally push Friend Groups
     checks.push({
         name: "Friend Groups",
