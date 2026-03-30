@@ -222,6 +222,38 @@ function validateRaid(analysis) {
 
     checks.push({ name: "Council", valid: hasCouncil, severity: "danger" });
 
+    function hasAnyPlayer(playerList) {
+        if (!playerList?.length) return true;
+    
+        const raidNames = analysis.players.map(p => resolveDisplayName(p));
+    
+        return playerList.some(name => raidNames.includes(name));
+    }
+
+    // MD Leads
+    const hasMDLead = hasAnyPlayer(CONFIG?.mdLeads);
+    checks.push({
+        name: "MD Lead",
+        valid: hasMDLead,
+        severity: "danger"
+    });
+    
+    // Loot Masters
+    const hasLootMaster = hasAnyPlayer(CONFIG?.lootMasters);
+    checks.push({
+        name: "Loot Master",
+        valid: hasLootMaster,
+        severity: "danger"
+    });
+    
+    // Raid Leads
+    const hasRaidLead = hasAnyPlayer(CONFIG?.raidLeads);
+    checks.push({
+        name: "Raid Lead",
+        valid: hasRaidLead,
+        severity: "danger"
+    });
+
     // 4. Spouse check
     let spousesTogether = true;
     let spouseIssues = [];
