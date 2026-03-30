@@ -316,10 +316,13 @@ function validateRaid(analysis) {
         }
     });
 
+
+    
     if (raidType === "gruulmag" && CONFIG?.gruulMageTanks?.length) {
-        // Check if at least one of the Mage Tanks is present
+        const playerNames = analysis.players.map(p => resolveDisplayName(p));
+        
         const anyPresent = CONFIG.gruulMageTanks.some(name =>
-            analysis.players.some(p => p.name === name)
+            playerNames.includes(name)
         );
 
         checks.push({
