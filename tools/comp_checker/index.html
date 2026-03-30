@@ -109,34 +109,6 @@ async function fetchEvent(eventId) {
     return await res.json();
 }
 
-async function checkSignupWarnings(eventId, raidCompPlayers) {
-    try {
-        const eventData = await fetchEvent(eventId);
-        const signUps = eventData.signUps || [];
-
-        // Map player names -> status
-        const statusMap = {};
-        signUps.forEach(entry => {
-            statusMap[entry.name] = entry.status || "primary"; // use the actual signup status
-        });
-
-        // Find any players in raid comp who are Late/Tentative/Absent
-        const warnings = raidCompPlayers
-            .filter(player => {
-                const status = statusMap[player.name] || "primary";
-                return ["Late", "Tentative", "Absence"].includes(status);
-            })
-            .map(p => p.name); // map to names for easier display
-
-        return warnings;
-
-    } catch (err) {
-        console.error("Error fetching event signups:", err);
-        alert("Failed to fetch signup data");
-        return [];
-    }
-}
-
 function getRole(player) {
     if (!player.specName) return "dps";
 
@@ -491,6 +463,20 @@ function renderChecks(checks, container, players = []) {
     }
 }
 
+function getSignupWarnings(players, statusMap) {
+    function normalizeName(name) {
+        return name ? name.trim().toLowerCase() : "";
+    }
+
+    return players
+        .filter(p =>
+            warningStatuses.includes(
+                (statusMap[normalizeName(p.name)] || "primary").toLowerCase()
+            )
+        )
+        .map(p => p.name);
+}
+
 async function renderRaid(data) {
     const output = document.getElementById("output");
     output.innerHTML = "";
@@ -551,17 +537,13 @@ async function renderRaid(data) {
 
                 // Add signup warnings using cached statusMap
                 if (Object.keys(statusMap).length) {
-                    const warnings = sectionPlayers
-                        .filter(p => warningStatuses.includes(
-                            (statusMap[normalizeName(p.name)] || "primary").toLowerCase()
-                        ))
-                        .map(p => p.name);
+                    const warnings = getSignupWarnings(sectionPlayers, statusMap);
 
                     if (warnings.length > 0) {
                         checks.push({
                             name: "Signup Status",
                             valid: false,
-                            severity: "warning",
+                            severity: "danger",
                             players: warnings
                         });
                     }
