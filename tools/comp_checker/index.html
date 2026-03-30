@@ -250,23 +250,6 @@ function validateRaid(analysis) {
 
     checks.push({ name: "Council", valid: hasCouncil, severity: "danger" });
 
-    // let spousesTogether = true;
-    // (CONFIG?.spousePairs || []).forEach(([a, b]) => {
-    //     const hasA = analysis.players.some(p => p.id === a[0]);
-    //     const hasB = analysis.players.some(p => p.id === b[0]);
-    //     if ((hasA && !hasB) || (!hasA && hasB)) spousesTogether = false;
-    // });
-    // checks.push({ name: "Spouses Together", valid: spousesTogether, severity: "danger" });
-
-    // let friendsTogether = true;
-    // (CONFIG?.friendGroups || []).forEach(group => {
-    //     const present = group.members.filter(([id]) =>
-    //         analysis.players.some(p => p.id === id)
-    //     );
-    //     if (present.length > 0 && present.length < group.members.length) friendsTogether = false;
-    // });
-    // checks.push({ name: "Friend Groups", valid: friendsTogether, severity: "warning" });
-
     // 4. Spouse check
     let spousesTogether = true;
     let spouseIssues = [];
@@ -316,8 +299,6 @@ function validateRaid(analysis) {
         }
     });
 
-
-    
     if (raidType === "gruulmag" && CONFIG?.gruulMageTanks?.length) {
         const playerNames = analysis.players.map(p => resolveDisplayName(p));
         
@@ -456,6 +437,15 @@ function renderChecks(checks, container, players = []) {
                 }
             }
 
+            // if (c.name === "Spouses Together" && !c.valid) {
+            //     CONFIG.spousePairs.forEach(([a, b]) => {
+            //         const hasA = players.some(p => p.id === a[0]);
+            //         const hasB = players.some(p => p.id === b[0]);
+            //         if (hasA && !hasB) text += `⚠ ${a[1]} is without their spouse ${b[1]}\n`;
+            //         if (!hasA && hasB) text += `⚠ ${b[1]} is without their spouse ${a[1]}\n`;
+            //     });
+            // }
+
             if (c.name === "Spouses Together" && !c.valid) {
                 CONFIG.spousePairs.forEach(([a, b]) => {
                     const hasA = players.some(p => p.id === a[0]);
@@ -465,14 +455,23 @@ function renderChecks(checks, container, players = []) {
                 });
             }
 
-            if (c.name === "Friend Groups" && !c.valid) {
-                CONFIG.friendGroups.forEach(group => {
-                    const present = group.members.filter(([id]) => players.some(p => p.id === id));
-                    if (present.length > 0 && present.length < group.members.length) {
-                        const missing = group.members.filter(([id]) => !present.some(([pid]) => pid === id));
-                        const missingNames = missing.map(m => m[1]).join(", ");
-                        text += `⚠ Friend group "${group.name}" incomplete, missing: ${missingNames}\n`;
-                    }
+            // if (c.name === "Friend Groups" && !c.valid) {
+            //     CONFIG.friendGroups.forEach(group => {
+            //         const present = group.members.filter(([id]) => players.some(p => p.id === id));
+            //         if (present.length > 0 && present.length < group.members.length) {
+            //             const missing = group.members.filter(([id]) => !present.some(([pid]) => pid === id));
+            //             const missingNames = missing.map(m => m[1]).join(", ");
+            //             text += `⚠ Friend group "${group.name}" incomplete, missing: ${missingNames}\n`;
+            //         }
+            //     });
+            // }
+
+            if (c.name === "Friend Groups" && !c.valid && c.issues?.length) {
+                c.issues.forEach(group => {
+                    const presentNames = group.present.map(p => p[1]).join(", ");
+                    const missingNames = group.missing.map(m => m[1]).join(", ");
+            
+                    text += `⚠ Friend group "${group.name}" includes ${presentNames || "nobody"}, but missing: ${missingNames}\n`;
                 });
             }
 
