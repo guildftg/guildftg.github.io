@@ -182,14 +182,18 @@ function validateRaid(analysis) {
     const checks = [];
     const raidType = document.getElementById("raidType").value;
 
-    // 1. Role check (3/5/17)
+    // 1. Role check (2-3/5-6/16-18)
+    function inRange(val, min, max) {
+        return val >= min && val <= max;
+    }
+    
     const roleValid =
-        analysis.tanks === 3 &&
-        analysis.healers === 5 &&
-        analysis.dps === 17;
-
+        inRange(analysis.tanks, 2, 3) &&
+        inRange(analysis.healers, 5, 6) &&
+        inRange(analysis.dps, 16, 18);
+    
     checks.push({
-        name: "Roles (3/5/17)",
+        name: "Roles (2-3/5-6/16-18)",
         valid: roleValid,
         severity: "danger"
     });
