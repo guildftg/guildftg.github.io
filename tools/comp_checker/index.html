@@ -629,11 +629,7 @@ async function renderRaid(data) {
             const checks = validateRaid(analysis);
 
             if (Object.keys(statusMap).length) {
-                const warnings = sectionPlayers
-                    .filter(p => warningStatuses.includes(
-                        (statusMap[normalizeName(p.name)] || "primary").toLowerCase()
-                    ))
-                    .map(p => p.name);
+                const warnings = getSignupWarnings(sectionPlayers, statusMap);
 
                 if (warnings.length > 0) {
                     checks.push({
