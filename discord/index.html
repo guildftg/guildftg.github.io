@@ -58,7 +58,7 @@ function getQueryParam(param) {
 
 // Set verification code
 const codeField = document.getElementById('codeField');
-codeField.value = getQueryParam('k');
+codeField.value = "-verify " getQueryParam('k');
 
 // Copy button functionality
 const copyButton = document.getElementById('copyButton');
