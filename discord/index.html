@@ -61,7 +61,8 @@ function getQueryParam(param) {
 
 // Set verification code with "-verify" prefix
 const codeField = document.getElementById('codeField');
-codeField.value = "/ftgverify " + getQueryParam('k');
+//codeField.value = "/ftgverify " + getQueryParam('k');
+codeField.value = getQueryParam('k');
 
 // Copy button functionality
 const copyButton = document.getElementById('copyButton');
