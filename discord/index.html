@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Discord Verification</title>
-  <!-- Bootstrap CSS CDN -->
+  <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="bg-light">
@@ -20,26 +20,61 @@
         <input type="text" class="form-control text-center" id="codeField" readonly>
       </div>
 
+      <!-- Copy button -->
+      <button id="copyButton" class="btn btn-success mb-3">
+        Copy Code
+      </button>
+
       <!-- Discord join button -->
-      <a id="discordButton" href="https://discord.gg/invitecode" target="_blank" class="btn btn-primary btn-lg">
+      <a id="discordButton" href="https://discord.gg/b2VXu4ABPq" target="_blank" class="btn btn-primary btn-lg">
         Join Discord
       </a>
+
+      <!-- Toast for feedback -->
+      <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+        <div id="copyToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+          <div class="d-flex">
+            <div class="toast-body">
+              Code copied to clipboard!
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
 
-<!-- Optional Bootstrap JS -->
+<!-- Bootstrap JS Bundle (includes Popper) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-// Parse query parameter 'k'
+// Get query parameter 'k'
 function getQueryParam(param) {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get(param) || '';
 }
 
-// Set the code input value
-document.getElementById('codeField').value = getQueryParam('k');
+// Set verification code
+const codeField = document.getElementById('codeField');
+codeField.value = getQueryParam('k');
+
+// Copy button functionality
+const copyButton = document.getElementById('copyButton');
+copyButton.addEventListener('click', () => {
+    codeField.select();
+    codeField.setSelectionRange(0, 99999); // For mobile
+
+    navigator.clipboard.writeText(codeField.value).then(() => {
+        // Show success toast
+        const toastEl = document.getElementById('copyToast');
+        const toast = new bootstrap.Toast(toastEl);
+        toast.show();
+    }).catch(err => {
+        alert("Failed to copy code: " + err);
+    });
+});
 </script>
 
 </body>
