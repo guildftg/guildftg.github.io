@@ -20,15 +20,18 @@
         <input type="text" class="form-control text-center" id="codeField" readonly>
       </div>
 
-      <!-- Copy button -->
-      <button id="copyButton" class="btn btn-primary btn-lg mb-3">
-        Copy Code
-      </button>
+      <!-- Buttons aligned side by side -->
+      <div class="d-flex justify-content-center gap-3 mb-3">
+        <!-- Copy button -->
+        <button id="copyButton" class="btn btn-primary btn-lg">
+          Copy Code
+        </button>
 
-      <!-- Discord join button -->
-      <a id="discordButton" href="https://discord.gg/b2VXu4ABPq" target="_blank" class="btn btn-success btn-lg">
-        Join Discord
-      </a>
+        <!-- Discord join button -->
+        <a id="discordButton" href="https://discord.gg/b2VXu4ABPq" target="_blank" class="btn btn-success btn-lg">
+          Join Discord
+        </a>
+      </div>
 
       <!-- Toast for feedback -->
       <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
@@ -56,9 +59,9 @@ function getQueryParam(param) {
     return urlParams.get(param) || '';
 }
 
-// Set verification code
+// Set verification code with "-verify" prefix
 const codeField = document.getElementById('codeField');
-codeField.value = "-verify " getQueryParam('k');
+codeField.value = "-verify " + getQueryParam('k');
 
 // Copy button functionality
 const copyButton = document.getElementById('copyButton');
