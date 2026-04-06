@@ -83,7 +83,7 @@ function addInput() {
     div.className = "input-block";
     div.innerHTML = `
         <h3>Event ${inputCount}</h3>
-        <input class="eventId" placeholder="Enter Event ID">
+        <textarea class="eventJson" placeholder='Paste JSON here'></textarea>
         <button onclick="this.parentElement.remove()">❌ Remove</button>
     `;
 
@@ -104,13 +104,6 @@ function formatDate(dateStr) {
     });
 }
 
-async function fetchEvent(eventId) {
-    const url = `https://raid-helper.dev/api/v2/events/${eventId}`;
-    const res = await fetch(url);
-    if (!res.ok) throw new Error("HTTP " + res.status);
-    return await res.json();
-}
-
 function isRealSignup(s) {
     return (
         typeof s.name === "string" &&
@@ -121,18 +114,18 @@ function isRealSignup(s) {
 }
 
 async function compare() {
-    const inputs = document.querySelectorAll(".eventId");
+    const inputs = document.querySelectorAll(".eventJson");
 
     const nameLists = [];
     const labels = [];
     const frequency = new Map();
 
     for (const input of inputs) {
-        const eventId = input.value.trim();
-        if (!eventId) continue;
+        const jsonStr = input.value.trim();
+        if (!jsonStr) continue;
 
         try {
-            const data = await fetchEvent(eventId);
+            const data = JSON.parse(jsonStr);
             const parsedDate = formatDate(data.date);
 
             const validNames = (data.signUps || [])
@@ -149,7 +142,7 @@ async function compare() {
             });
 
         } catch (e) {
-            console.error("Failed event:", eventId, e);
+            console.error("Invalid JSON:", e);
         }
     }
 
@@ -173,11 +166,11 @@ async function compare() {
     uniqueContainer.innerHTML = "";
 
     for (let i = 0; i < inputs.length; i++) {
-        const eventId = inputs[i].value.trim();
-        if (!eventId) continue;
+        const jsonStr = inputs[i].value.trim();
+        if (!jsonStr) continue;
 
         try {
-            const data = await fetchEvent(eventId);
+            const data = JSON.parse(jsonStr);
 
             const eventNames = (data.signUps || [])
                 .filter(isRealSignup)
@@ -198,7 +191,7 @@ async function compare() {
             uniqueContainer.appendChild(div);
 
         } catch (e) {
-            console.error("Failed unique calc:", eventId, e);
+            console.error("Invalid JSON for unique calc:", e);
         }
     }
 }
