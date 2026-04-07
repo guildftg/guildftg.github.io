@@ -6,8 +6,17 @@
     <title>FTG Registration</title>
 
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../assets/css/bootstrap.min.css" rel="stylesheet">
     <link rel="icon" href="../assets/images/ftg_logo.png" type="image/png">
+    <script>
+      // automatically set dark or light mode
+      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          document.documentElement.setAttribute('data-bs-theme', 'dark');
+      }
+      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+          document.documentElement.setAttribute('data-bs-theme', 'light');
+      }
+    </script>
 
     <style>
       html, body {
@@ -19,16 +28,15 @@
         justify-content: center;
         padding-top: 40px;
         padding-bottom: 40px;
-        background-color: #f8f9fa;
       }
       .form-register {
         width: 100%;
         max-width: 400px;
         padding: 20px;
         margin: auto;
-        background-color: white;
+        background-color: var(--bs-tertiary-bg);
         border-radius: 8px;
-        box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        box-shadow: var(--bs-box-shadow);
       }
       .form-register .form-floating:focus-within {
         z-index: 2;

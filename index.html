@@ -16,6 +16,15 @@
     <link rel="icon" href="assets/images/ftg_logo.png" type="image/png">
     <link href="assets/css/bootstrap.min.css" rel="stylesheet">
     <link href="assets/css/product.css" rel="stylesheet">
+    <script>
+      // automatically set dark or light mode
+      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          document.documentElement.setAttribute('data-bs-theme', 'dark');
+      }
+      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+          document.documentElement.setAttribute('data-bs-theme', 'light');
+      }
+    </script>
     <style>
     .bd-placeholder-img {
       font-size: 1.125rem;
@@ -81,8 +90,8 @@
     </style>
   </head>
   <body>
-    <header class="sticky-top py-1">
-      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <header class="sticky-top py-1 bg-body">
+      <nav class="navbar navbar-expand-lg">
         <div class="container-fluid">
           <a href="/">
             <img class="navbar-brand logo px-3 rounded-circle" style="max-height: 90px" src="assets/images/ftg_logo.png" alt="FTG Guild Logo">
@@ -231,11 +240,6 @@
       </div>
     </footer>
     <script>
-    document.getElementById("copyright").innerHTML =
-        "Copyright © " + new Date().getFullYear() + " FTG";
-
-        </script>
-        <script>
     document.addEventListener('DOMContentLoaded', function() {
         var btn = document.getElementById("return-to-top");
 
