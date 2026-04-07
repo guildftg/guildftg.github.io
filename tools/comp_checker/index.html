@@ -83,11 +83,12 @@ const HEALER_SPECS = new Set([
 
 const warningStatuses = ["late", "tentative", "absent"]; // correct API statuses
 
+let missingNameMapWarnings = new Set(); // store missing IDs to avoid duplicates
+
 function resolveDisplayName(player) {
     if (!player) return "Empty";
 
     const id = player.id;
-    // const cls = player.className ? player.className.toLowerCase() : null;
     const cls = player.className
         ? player.className.toLowerCase().replace(/\s+/g, "")
         : null;
@@ -97,7 +98,11 @@ function resolveDisplayName(player) {
     const nameMap = CONFIG?.nameMap || {};
     const userEntry = nameMap[id];
 
-    if (!userEntry) return player.name || "Unknown";
+    if (!userEntry) {
+        // Log warning for missing player in nameMap
+        missingNameMapWarnings.add(`${player.name || "Unknown"} (ID: ${id})`);
+        return player.name || "Unknown";
+    }
 
     return userEntry[cls] || player.name || "Unknown";
 }
@@ -604,6 +609,39 @@ async function renderRaid(data) {
 
                 // Build import string
                 const importString = buildImportString(sectionPlayers);
+                
+                // Show missing nameMap warnings
+                if (missingNameMapWarnings.size > 0) {
+                    const warningDiv = document.createElement("div");
+                    warningDiv.className = "alert alert-warning mt-2";
+                    warningDiv.innerHTML = `<strong>Warning:</strong> The following players were not found in nameMap: <br>${Array.from(missingNameMapWarnings).join("<br>")}`;
+                    container.parentElement.appendChild(warningDiv);
+                
+                    // Clear for next section
+                    missingNameMapWarnings.clear();
+                }
+                
+                // Wrapper row for import string
+                const importWrapper = document.createElement("div");
+                importWrapper.className = "input-group mt-2";
+                
+                // Disabled input
+                const input = document.createElement("input");
+                input.type = "text";
+                input.className = "form-control form-control-sm";
+                input.value = importString;
+                input.disabled = true;
+                
+                // Copy button
+                const btn = document.createElement("button");
+                btn.className = "btn btn-outline-light btn-sm";
+                btn.textContent = "Copy";
+                btn.onclick = () => copyToClipboard(importString);
+                
+                // Assemble
+                importWrapper.appendChild(input);
+                importWrapper.appendChild(btn);
+                container.parentElement.appendChild(importWrapper);
 
                 // Wrapper row
                 const importWrapper = document.createElement("div");
