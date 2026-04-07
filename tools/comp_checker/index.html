@@ -631,24 +631,6 @@ async function renderRaid(data) {
                 input.className = "form-control form-control-sm";
                 input.value = importString;
                 input.disabled = true;
-                
-                // Copy button
-                const btn = document.createElement("button");
-                btn.className = "btn btn-outline-light btn-sm";
-                btn.textContent = "Copy";
-                btn.onclick = () => copyToClipboard(importString);
-                
-                // Assemble
-                importWrapper.appendChild(input);
-                importWrapper.appendChild(btn);
-                container.parentElement.appendChild(importWrapper);
-
-                // Disabled input
-                const input = document.createElement("input");
-                input.type = "text";
-                input.className = "form-control form-control-sm";
-                input.value = importString;
-                input.disabled = true;
 
                 // Copy button
                 const btn = document.createElement("button");
