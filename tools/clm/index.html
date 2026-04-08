@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CLM Points Dashboard</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #121212;
+    color: #fff;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #333;
+}
+
+th {
+    cursor: pointer;
+    background: #1f1f1f;
+}
+
+tr:hover {
+    background: #1e1e1e;
+}
+
+.class-Mage { color: #69ccf0; }
+.class-Warrior { color: #c79c6e; }
+.class-Priest { color: #ffffff; }
+.class-Rogue { color: #fff569; }
+.class-Druid { color: #ff7d0a; }
+.class-Paladin { color: #f58cba; }
+.class-Warlock { color: #9482c9; }
+.class-Hunter { color: #abd473; }
+.class-Shaman { color: #0070de; }
+
+.search-box {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    background: #1f1f1f;
+    border: none;
+    color: white;
+}
+</style>
+</head>
+<body>
+
+<h1>CLM Points Dashboard</h1>
+
+<input type="text" id="search" class="search-box" placeholder="Search player...">
+
+<table id="table">
+<thead>
+<tr>
+<th onclick="sortTable(0)">Name</th>
+<th onclick="sortTable(1)">Class</th>
+<th onclick="sortTable(2)">Points</th>
+<th onclick="sortTable(3)">Spent</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+
+<script>
+const xmlData = `PASTE_XML_HERE`;
+
+const parser = new DOMParser();
+const xml = parser.parseFromString(xmlData, "text/xml");
+const players = xml.getElementsByTagName("player");
+
+const tbody = document.querySelector("#table tbody");
+
+let data = [];
+
+for (let p of players) {
+    data.push({
+        name: p.getElementsByTagName("name")[0].textContent,
+        class: p.getElementsByTagName("class")[0].textContent,
+        points: parseInt(p.getElementsByTagName("points")[0].textContent),
+        spent: parseInt(p.getElementsByTagName("spent")[0].textContent)
+    });
+}
+
+function renderTable(filteredData) {
+    tbody.innerHTML = "";
+    filteredData.forEach(p => {
+        const row = `<tr>
+            <td>${p.name}</td>
+            <td class="class-${p.class}">${p.class}</td>
+            <td>${p.points}</td>
+            <td>${p.spent}</td>
+        </tr>`;
+        tbody.innerHTML += row;
+    });
+}
+
+renderTable(data);
+
+function sortTable(index) {
+    const keys = ["name", "class", "points", "spent"];
+    const key = keys[index];
+
+    data.sort((a, b) => {
+        if (typeof a[key] === "string") {
+            return a[key].localeCompare(b[key]);
+        }
+        return b[key] - a[key];
+    });
+
+    renderTable(data);
+}
+
+document.getElementById("search").addEventListener("input", function() {
+    const value = this.value.toLowerCase();
+    const filtered = data.filter(p => p.name.toLowerCase().includes(value));
+    renderTable(filtered);
+});
+</script>
+
+</body>
+</html>
