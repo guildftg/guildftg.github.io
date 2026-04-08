@@ -15,6 +15,38 @@ h1 {
     text-align: center;
 }
 
+textarea {
+    width: 100%;
+    height: 150px;
+    background: #1f1f1f;
+    color: white;
+    border: none;
+    padding: 10px;
+    margin-top: 10px;
+}
+
+button {
+    margin-top: 10px;
+    padding: 10px 20px;
+    background: #0070de;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #005bb5;
+}
+
+.search-box {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    background: #1f1f1f;
+    border: none;
+    color: white;
+}
+
 table {
     width: 100%;
     border-collapse: collapse;
@@ -45,20 +77,14 @@ tr:hover {
 .class-Warlock { color: #9482c9; }
 .class-Hunter { color: #abd473; }
 .class-Shaman { color: #0070de; }
-
-.search-box {
-    width: 100%;
-    padding: 10px;
-    margin-top: 10px;
-    background: #1f1f1f;
-    border: none;
-    color: white;
-}
 </style>
 </head>
 <body>
 
 <h1>CLM Points Dashboard</h1>
+
+<textarea id="xmlInput" placeholder="Paste your XML here..."></textarea>
+<button onclick="loadXML()">Load Data</button>
 
 <input type="text" id="search" class="search-box" placeholder="Search player...">
 
@@ -75,23 +101,27 @@ tr:hover {
 </table>
 
 <script>
-const xmlData = `PASTE_XML_HERE`;
-
-const parser = new DOMParser();
-const xml = parser.parseFromString(xmlData, "text/xml");
-const players = xml.getElementsByTagName("player");
-
+let data = [];
 const tbody = document.querySelector("#table tbody");
 
-let data = [];
+function loadXML() {
+    const xmlData = document.getElementById("xmlInput").value;
+    const parser = new DOMParser();
+    const xml = parser.parseFromString(xmlData, "text/xml");
+    const players = xml.getElementsByTagName("player");
 
-for (let p of players) {
-    data.push({
-        name: p.getElementsByTagName("name")[0].textContent,
-        class: p.getElementsByTagName("class")[0].textContent,
-        points: parseInt(p.getElementsByTagName("points")[0].textContent),
-        spent: parseInt(p.getElementsByTagName("spent")[0].textContent)
-    });
+    data = [];
+
+    for (let p of players) {
+        data.push({
+            name: p.getElementsByTagName("name")[0].textContent,
+            class: p.getElementsByTagName("class")[0].textContent,
+            points: parseInt(p.getElementsByTagName("points")[0].textContent),
+            spent: parseInt(p.getElementsByTagName("spent")[0].textContent)
+        });
+    }
+
+    renderTable(data);
 }
 
 function renderTable(filteredData) {
@@ -106,8 +136,6 @@ function renderTable(filteredData) {
         tbody.innerHTML += row;
     });
 }
-
-renderTable(data);
 
 function sortTable(index) {
     const keys = ["name", "class", "points", "spent"];
