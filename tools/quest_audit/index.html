@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Manual Adjustment Parser</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-dark text-light">
+
+<div class="container py-4">
+  <h2 class="mb-3">Manual Adjustment Parser</h2>
+
+  <textarea id="xmlInput" class="form-control mb-3" rows="10" placeholder="Paste XML here..."></textarea>
+
+  <button class="btn btn-primary mb-4" onclick="parseXML()">Parse</button>
+
+  <div id="summary" class="mb-3"></div>
+
+  <div id="duplicates" class="mb-3"></div>
+
+  <div class="table-responsive">
+    <table class="table table-dark table-striped" id="resultTable">
+      <thead>
+        <tr>
+          <th>Player</th>
+          <th>EP Total</th>
+          <th>GP Total</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+function parseXML() {
+    const xmlText = document.getElementById("xmlInput").value;
+
+    const parser = new DOMParser();
+    const xml = parser.parseFromString(xmlText, "text/xml");
+
+    const points = xml.getElementsByTagName("point");
+
+    // ----------------------------
+    // SYSTEM TIME (UTC start of day)
+    // ----------------------------
+    const now = new Date();
+
+    const todayStart = Date.UTC(
+        now.getUTCFullYear(),
+        now.getUTCMonth(),
+        now.getUTCDate()
+    ) / 1000;
+
+    // ----------------------------
+    // Data containers
+    // ----------------------------
+    const epTotals = {};
+    const gpTotals = {};
+
+    const seen = new Set();
+    const duplicates = [];
+
+    // ----------------------------
+    // MAIN LOOP (build data only)
+    // ----------------------------
+    for (let p of points) {
+        const reason = p.getElementsByTagName("reason")[0]?.textContent;
+        if (reason !== "Manual adjustment") continue;
+
+        let player = p.getElementsByTagName("player")[0]?.textContent || "";
+        const timestamp = parseInt(p.getElementsByTagName("timestamp")[0]?.textContent);
+        const pointsVal = parseInt(p.getElementsByTagName("points")[0]?.textContent);
+
+        if (isNaN(timestamp) || isNaN(pointsVal)) continue;
+
+        // Normalize player
+        player = player.replace("-Dreamscythe", "");
+
+        // Duplicate detection
+        const key = player + "_" + timestamp + "_" + pointsVal;
+        if (seen.has(key)) {
+            duplicates.push({ player, timestamp, points: pointsVal });
+            continue;
+        }
+        seen.add(key);
+
+        // TODAY FILTER
+        if (timestamp < todayStart) continue;
+
+        // EP vs GP rule
+        if (pointsVal === 15) {
+            epTotals[player] = (epTotals[player] || 0) + pointsVal;
+        } else {
+            gpTotals[player] = (gpTotals[player] || 0) + pointsVal;
+        }
+    }
+
+    // ----------------------------
+    // BUILD TABLE DATA FIRST
+    // ----------------------------
+    const players = new Set([
+        ...Object.keys(epTotals),
+        ...Object.keys(gpTotals)
+    ]);
+
+    const sortedPlayers = Array.from(players)
+        .sort((a, b) => (epTotals[b] || 0) - (epTotals[a] || 0));
+
+    // ----------------------------
+    // RENDER TABLE
+    // ----------------------------
+    const tbody = document.querySelector("#resultTable tbody");
+    tbody.innerHTML = "";
+
+    sortedPlayers.forEach(player => {
+        const ep = epTotals[player] || 0;
+        const gp = gpTotals[player] || 0;
+
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td>${player}</td>
+            <td>${ep}</td>
+            <td>${gp}</td>
+        `;
+
+        tbody.appendChild(row);
+    });
+
+    // ----------------------------
+    // NOW COUNT ACTUAL TABLE ROWS
+    // ----------------------------
+    const tableRowCount = tbody.querySelectorAll("tr").length;
+
+    document.getElementById("summary").innerHTML = `
+        <div class="alert alert-info">
+            <strong>Total Manual Adjustments Today:</strong> ${tableRowCount}
+        </div>
+    `;
+
+    // ----------------------------
+    // DUPLICATES
+    // ----------------------------
+    if (duplicates.length > 0) {
+        let dupHTML = `<div class="alert alert-warning"><strong>Duplicate Adjustments Found:</strong><ul>`;
+
+        duplicates.forEach(d => {
+            const date = new Date(d.timestamp * 1000).toISOString();
+            dupHTML += `<li>${d.player} @ ${date} (${d.points})</li>`;
+        });
+
+        dupHTML += `</ul></div>`;
+        document.getElementById("duplicates").innerHTML = dupHTML;
+    } else {
+        document.getElementById("duplicates").innerHTML = `
+            <div class="alert alert-success">No duplicate adjustments found.</div>
+        `;
+    }
+}
+</script>
+
+</body>
+</html>
