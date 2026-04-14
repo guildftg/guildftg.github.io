@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Weekly Quest Parser</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-dark text-light">
+
+<div class="container py-4">
+  <h2 class="mb-4">Weekly Quest Submissions</h2>
+
+  <!-- Textarea input -->
+  <textarea id="textInput" class="form-control mb-3" rows="10" placeholder="Paste weekly_quest.txt content here..."></textarea>
+  
+  <button class="btn btn-primary mb-4" onclick="handleParse()">Parse</button>
+
+  <div id="summary" class="mb-3"></div>
+  <div id="output"></div>
+</div>
+
+<script>
+function handleParse() {
+  const text = document.getElementById('textInput').value;
+  if (!text.trim()) return;
+
+  processData(text);
+}
+
+function processData(text) {
+  const lines = text.split('\n').map(l => l.trim()).filter(l => l);
+  
+  const entries = [];
+  const nameCount = {};
+
+  for (let i = 0; i < lines.length; i += 2) {
+    const nameLine = lines[i];
+    const submissionLine = lines[i + 1] || '';
+
+    const nameMatch = nameLine.match(/^\d+\-\s*(.+)$/);
+    if (!nameMatch) continue;
+
+    const name = nameMatch[1].trim();
+    const submission = submissionLine.trim();
+
+    entries.push({ name, submission });
+
+    nameCount[name] = (nameCount[name] || 0) + 1;
+  }
+
+  // Categorize by submission
+  const grouped = {};
+  entries.forEach(entry => {
+    if (!grouped[entry.submission]) {
+      grouped[entry.submission] = [];
+    }
+    grouped[entry.submission].push(entry);
+  });
+
+  renderTable(grouped, nameCount, entries.length);
+}
+
+function renderTable(grouped, nameCount, totalCount) {
+  // Total summary
+  document.getElementById('summary').innerHTML = `
+    <div class="alert alert-info">
+      <strong>Total Submissions:</strong> ${totalCount}
+    </div>
+  `;
+
+  let html = '';
+
+  Object.keys(grouped).sort().forEach(submission => {
+    html += `
+      <h4 class="mt-4">${submission} (${grouped[submission].length})</h4>
+      <table class="table table-striped table-dark table-bordered">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Duplicate?</th>
+          </tr>
+        </thead>
+        <tbody>
+    `;
+
+    grouped[submission].forEach(entry => {
+      const isDuplicate = nameCount[entry.name] > 1;
+
+      html += `
+        <tr class="${isDuplicate ? 'table-danger' : ''}">
+          <td>${entry.name}</td>
+          <td>${isDuplicate ? 'Yes' : 'No'}</td>
+        </tr>
+      `;
+    });
+
+    html += `</tbody></table>`;
+  });
+
+  document.getElementById('output').innerHTML = html;
+}
+</script>
+
+</body>
+</html>
