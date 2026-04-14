@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>WoW Links</title>
+
+  <!-- Bootstrap CSS -->
+  <link
+    rel="stylesheet"
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+  />
+</head>
+
+<body class="bg-light">
+
+  <div class="container mt-5">
+    <h2 class="mb-4">WoW Links</h2>
+
+    <!-- List container -->
+    <div id="wowLinks" class="list-group"></div>
+  </div>
+
+  <script>
+    // Unified WoW links list (examples only)
+    const wowLinks = [
+      { url: "/wow/example-calculator", text: "Example Calculator" },
+      { url: "/wow/example-checklist", text: "Example Raid Checklist" },
+      { url: "https://example.com/raid-calendar", text: "Example Raid Calendar" }
+    ];
+
+    // Render full list
+    function renderWoWList() {
+      const container = document.getElementById("wowLinks");
+      container.innerHTML = "";
+
+      wowLinks.forEach(link => {
+        const a = document.createElement("a");
+        a.href = link.url;
+        a.textContent = link.text;
+        a.target = "_blank";
+        a.className = "list-group-item list-group-item-action";
+        container.appendChild(a);
+      });
+    }
+
+    // Initial load
+    window.addEventListener("DOMContentLoaded", renderWoWList);
+  </script>
+
+</body>
+</html>
