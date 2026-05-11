@@ -548,9 +548,17 @@ async function renderRaid(data) {
         .sort((a, b) => a - b);
 
     function getDividerName(groupNum) {
-        const totalGroups = sortedGroupNumbers.length;
-        const midpoint = Math.ceil(totalGroups / dividers.length);
-        return groupNum <= midpoint ? dividers[0].name : dividers[1].name;
+        let current = dividers[0]?.name || "Group";
+    
+        for (const divider of dividers) {
+            if (groupNum >= divider.position) {
+                current = divider.name;
+            } else {
+                break;
+            }
+        }
+    
+        return current;
     }
 
     function normalizeName(name) {
