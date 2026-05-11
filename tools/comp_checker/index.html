@@ -550,8 +550,13 @@ async function renderRaid(data) {
     function getDividerName(groupNum) {
         let current = dividers[0]?.name || "Group";
     
-        for (const divider of dividers) {
-            if (groupNum >= divider.position) {
+        for (let i = 0; i < dividers.length; i++) {
+            const divider = dividers[i];
+    
+            // Convert divider row position into actual first group number
+            const firstGroupInDivider = divider.position - i;
+    
+            if (groupNum >= firstGroupInDivider) {
                 current = divider.name;
             } else {
                 break;
