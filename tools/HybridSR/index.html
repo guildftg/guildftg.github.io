@@ -1,1 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Gargul Priority GP Combiner</title>
 
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+body {
+    background: #1b1e23;
+    color: #e8e8e8;
+}
+textarea {
+    min-height: 200px;
+    font-family: monospace;
+}
+.card {
+    background: #252932;
+    margin-top: 12px;
+}
+table {
+    color: #e8e8e8;
+}
+th, td {
+    vertical-align: top;
+}
+code {
+    background: #111;
+    padding: 4px 6px;
+    border-radius: 6px;
+    display: inline-block;
+}
+</style>
+</head>
+
+<body>
+<div class="container py-4">
+
+<h1 class="mb-3">Gargul Priority GP Combiner</h1>
+
+<div class="row">
+    <div class="col-md-12">
+        <label class="form-label">Gargul JSON Export</label>
+        <textarea id="gargulInput" class="form-control"></textarea>
+    </div>
+</div>
+
+<button class="btn btn-primary mt-3" onclick="processData()">Generate Priority Table</button>
+
+<div class="card p-3 mt-3">
+    <div id="output"></div>
+</div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/pako@2.1.0/dist/pako.min.js"></script>
+<script src="item_db.js"></script>
+
+<script>
+const EXEMPT_ITEMS = new Set(["34845"]);
+
+const PRIORITY_TEXT = {
+    HIGH: "HIGH",
+    MEDIUM: "MEDIUM",
+    LOW: "LOW",
+    OS: "OS"
+};
+
+function cleanPlayer(name) {
+    return (name || "").replace("-Dreamscythe", "");
+}
+
+/* -----------------------------
+   GARGUL PARSER (FIXED)
+------------------------------*/
+function parseGargul(raw) {
+    if (!raw) return [];
+
+    let data;
+    try {
+        data = JSON.parse(raw);
+    } catch (e) {
+        return [];
+    }
+
+    const result = [];
+
+    data.forEach(item => {
+
+        // ❌ EXEMPT CHECK (FIXED LOCATION)
+        if (EXEMPT_ITEMS.has(String(item.itemID))) return;
+
+        if (!item.awardedTo || item.awardedTo === "|de|") return;
+        if (!ITEM_DB[item.itemID]) return;
+
+        const player = cleanPlayer(item.awardedTo);
+        const rolls = item.Rolls || [];
+
+        if (!rolls.length) return;
+
+        // ✅ ONLY KEEP HIGHEST ROLL = WINNER
+        const winnerRoll = rolls.reduce((best, r) =>
+            (!best || r.amount > best.amount ? r : best),
+        null);
+
+        const msCount = rolls.filter(r => r.classification === "MS").length;
+
+        const itemSRd = !!item.SR;
+
+        let tier = "OS";
+        if (itemSRd && msCount >= 3) tier = "HIGH";
+        else if (itemSRd) tier = "MEDIUM";
+        else if (!itemSRd && msCount >= 3) tier = "LOW";
+
+        result.push({
+            player,
+            itemID: item.itemID,
+            itemName: ITEM_DB[item.itemID].name,
+            priority: tier,
+            winnerRoll: winnerRoll?.amount || 0,
+            timestamp: item.timestamp || 0,
+            source: "Gargul"
+        });
+    });
+
+    return result;
+}
+
+/* -----------------------------
+   COMBINE (NOW SIMPLE)
+------------------------------*/
+function getPriorityRank(p) {
+    return { HIGH: 4, MEDIUM: 3, LOW: 2, OS: 1 }[p] || 0;
+}
+
+function combine(gargul) {
+    // one row per item winner already ensured in parser
+    return gargul
+        .map(g => {
+            return {
+                player: g.player,
+                item: g.itemName,
+                itemID: g.itemID,
+                priority: g.priority,
+                reason: "Gargul winning roll",
+                gpCommand: `/awarditem ${g.itemID} ${g.player} ${g.priority}`,
+                timestamp: g.timestamp
+            };
+        })
+        .sort((a, b) => a.timestamp - b.timestamp);
+}
+
+/* -----------------------------
+   UI
+------------------------------*/
+function renderTable(rows) {
+    let html = `
+    <table class="table table-dark table-striped">
+        <thead>
+            <tr>
+                <th>Player</th>
+                <th>Item</th>
+                <th>Priority</th>
+                <th>Reason</th>
+                <th>Command</th>
+            </tr>
+        </thead>
+        <tbody>
+    `;
+
+    rows.forEach((r, i) => {
+        html += `
+        <tr>
+            <td>${r.player}</td>
+            <td>${r.item}</td>
+            <td>${PRIORITY_TEXT[r.priority] || r.priority}</td>
+            <td>${r.reason}</td>
+            <td>
+                <code id="cmd-${i}">${r.gpCommand}</code>
+                <button class="btn btn-sm btn-secondary ms-2"
+                    onclick="navigator.clipboard.writeText(document.getElementById('cmd-${i}').innerText)">
+                    Copy
+                </button>
+            </td>
+        </tr>
+        `;
+    });
+
+    html += `</tbody></table>`;
+    document.getElementById("output").innerHTML = html;
+}
+
+/* -----------------------------
+   MAIN
+------------------------------*/
+function processData() {
+    const gargulRaw = document.getElementById("gargulInput").value;
+
+    const gargul = parseGargul(gargulRaw);
+    const combined = combine(gargul);
+
+    renderTable(combined);
+}
+</script>
+
+</body>
+</html>
