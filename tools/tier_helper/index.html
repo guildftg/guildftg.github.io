@@ -89,20 +89,23 @@
 
 <script>
 const bosses = [
-  { dungeon:"Gruul+Mag", boss:"Maulgar", item:"T4 Shoulders", OS:6, LOW:12, MEDIUM:18, HIGH:24 },
-  { dungeon:"Gruul+Mag", boss:"Gruul", item:"T4 Legs", OS:6, LOW:12, MEDIUM:18, HIGH:24 },
-  { dungeon:"Gruul+Mag", boss:"Magtheridon", item:"T4 Chest", OS:6, LOW:12, MEDIUM:18, HIGH:24 },
-  { dungeon:"Serpentshrine Cavern", boss:"Leotheras", item:"T5 Gloves", OS:6, LOW:13, MEDIUM:19, HIGH:26 },
-  { dungeon:"Serpentshrine Cavern", boss:"Fathom Lord", item:"T5 Legs", OS:9, LOW:17, MEDIUM:26, HIGH:34 },
-  { dungeon:"Serpentshrine Cavern", boss:"Vashj", item:"T5 Helm", OS:9, LOW:17, MEDIUM:26, HIGH:34 },
-  { dungeon:"Tempest Keep", boss:"Void Reaver", item:"T5 Shoulders", OS:9, LOW:17, MEDIUM:26, HIGH:34 },
-  { dungeon:"Tempest Keep", boss:"Kael'thas", item:"T5 Chest", OS:9, LOW:17, MEDIUM:26, HIGH:34 },
-  { dungeon:"Tempest Keep", boss:"Kael'thas", item:"Verdant Sphere", OS:10, LOW:20, MEDIUM:29, HIGH:39 }
+  { id:"maulgar", dungeon:"Gruul+Mag", boss:"Maulgar", item:"T4 Shoulders", OS:6, LOW:12, MEDIUM:18, HIGH:24 },
+  { id:"gruul", dungeon:"Gruul+Mag", boss:"Gruul", item:"T4 Legs", OS:6, LOW:12, MEDIUM:18, HIGH:24 },
+  { id:"magtheridon", dungeon:"Gruul+Mag", boss:"Magtheridon", item:"T4 Chest", OS:6, LOW:12, MEDIUM:18, HIGH:24 },
+
+  { id:"leotheras", dungeon:"Serpentshrine Cavern", boss:"Leotheras", item:"T5 Gloves", OS:6, LOW:13, MEDIUM:19, HIGH:26 },
+  { id:"fathomlord", dungeon:"Serpentshrine Cavern", boss:"Fathom Lord", item:"T5 Legs", OS:9, LOW:17, MEDIUM:26, HIGH:34 },
+  { id:"vashj", dungeon:"Serpentshrine Cavern", boss:"Vashj", item:"T5 Helm", OS:9, LOW:17, MEDIUM:26, HIGH:34 },
+
+  { id:"voidreaver", dungeon:"Tempest Keep", boss:"Void Reaver", item:"T5 Shoulders", OS:9, LOW:17, MEDIUM:26, HIGH:34 },
+
+  { id:"kael_chest", dungeon:"Tempest Keep", boss:"Kael'thas", item:"T5 Chest", OS:9, LOW:17, MEDIUM:26, HIGH:34 },
+  { id:"kael_sphere", dungeon:"Tempest Keep", boss:"Kael'thas", item:"Verdant Sphere", OS:10, LOW:20, MEDIUM:29, HIGH:39 }
 ];
 
 let players = [];
 let selectedPlayer = null;
-let selectedBoss = null;
+let selectedBossId = null;
 
 function loadPlayers() {
   const raw = document.getElementById("playerInput").value;
@@ -120,7 +123,6 @@ function loadPlayers() {
     btn.onclick = () => {
       selectedPlayer = p;
 
-      // highlight
       document.querySelectorAll("#playerGrid button").forEach(b => {
         b.classList.remove("selected-player");
       });
@@ -139,10 +141,10 @@ function loadBosses() {
   bosses.forEach(b => {
     const btn = document.createElement("button");
     btn.className = "btn btn-outline-secondary btn-sm w-100 text-start mb-1";
-    btn.innerText = `${b.dungeon} - ${b.boss} (${b.item})`;
+    btn.innerText = `${b.dungeon} - ${b.boss} → ${b.item}`;
 
     btn.onclick = () => {
-      selectedBoss = b;
+      selectedBossId = b.id;
 
       document.querySelectorAll("#bossList button").forEach(x => {
         x.classList.remove("selected-boss");
@@ -160,18 +162,17 @@ function getPriority() {
   return document.querySelector('input[name="prio"]:checked').value;
 }
 
-// 🔥 central update (NOW ALWAYS RUNS)
 function update() {
-  if (!selectedPlayer || !selectedBoss) return;
+  const boss = bosses.find(b => b.id === selectedBossId);
+  if (!selectedPlayer || !boss) return;
 
   const prio = getPriority();
-  const value = selectedBoss[prio];
+  const value = boss[prio];
 
-  const cmd = `/awardgp ${selectedPlayer} ${value} ${selectedBoss.item} ${prio}`;
+  const cmd = `/awardgp ${selectedPlayer} ${value} ${boss.item} ${prio}`;
   document.getElementById("output").value = cmd;
 }
 
-// 🔥 THIS WAS MISSING BEFORE
 document.querySelectorAll('input[name="prio"]').forEach(r => {
   r.addEventListener("change", update);
 });
@@ -182,7 +183,6 @@ function copyCmd() {
   document.execCommand("copy");
 }
 
-// init
 loadBosses();
 </script>
 
