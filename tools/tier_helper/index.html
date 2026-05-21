@@ -8,14 +8,29 @@
 
 <style>
   body { background:#111; color:#eee; }
-  .btn-grid button { width:100%; margin-bottom:5px; }
+
   .grid-5 {
     display:grid;
     grid-template-columns: repeat(5, 1fr);
     gap:6px;
   }
-  textarea, input { background:#222 !important; color:#eee !important; }
+
+  textarea, input {
+    background:#222 !important;
+    color:#eee !important;
+  }
+
   .card { background:#1b1b1b; }
+
+  .selected-player {
+    background:#0d6efd !important;
+    color:white !important;
+  }
+
+  .selected-boss {
+    background:#198754 !important;
+    color:white !important;
+  }
 </style>
 </head>
 
@@ -25,15 +40,14 @@
 
   <h3 class="mb-3">GP Award Tool</h3>
 
-  <!-- IMPORT PLAYERS -->
+  <!-- IMPORT -->
   <div class="card p-3 mb-3">
-    <label class="form-label">Import Players (/rhai format)</label>
-    <textarea id="playerInput" class="form-control" rows="3"
-    placeholder="/rhai import Player1;Player2;Player3"></textarea>
+    <label class="form-label">Import Players</label>
+    <textarea id="playerInput" class="form-control" rows="3"></textarea>
     <button class="btn btn-primary mt-2" onclick="loadPlayers()">Load Players</button>
   </div>
 
-  <!-- PLAYERS GRID -->
+  <!-- PLAYERS -->
   <div class="card p-3 mb-3">
     <h5>Players</h5>
     <div id="playerGrid" class="grid-5"></div>
@@ -42,12 +56,13 @@
   <!-- BOSSES -->
   <div class="card p-3 mb-3">
     <h5>Bosses</h5>
-    <div id="bossList" class="btn-grid"></div>
+    <div id="bossList"></div>
   </div>
 
   <!-- PRIORITY -->
   <div class="card p-3 mb-3">
     <h5>Priority</h5>
+
     <div class="btn-group" role="group">
       <input type="radio" class="btn-check" name="prio" id="os" value="OS" checked>
       <label class="btn btn-outline-warning" for="os">OS</label>
@@ -100,24 +115,42 @@ function loadPlayers() {
     const btn = document.createElement("button");
     btn.className = "btn btn-outline-light btn-sm";
     btn.innerText = p;
+
     btn.onclick = () => {
       selectedPlayer = p;
+
+      // highlight
+      document.querySelectorAll("#playerGrid button").forEach(b => {
+        b.classList.remove("selected-player");
+      });
+      btn.classList.add("selected-player");
+
       update();
     };
+
     grid.appendChild(btn);
   });
 }
 
 function loadBosses() {
   const container = document.getElementById("bossList");
-  bosses.forEach((b, i) => {
+
+  bosses.forEach(b => {
     const btn = document.createElement("button");
-    btn.className = "btn btn-outline-secondary btn-sm w-100 text-start";
+    btn.className = "btn btn-outline-secondary btn-sm w-100 text-start mb-1";
     btn.innerText = `${b.dungeon} - ${b.boss} (${b.item})`;
+
     btn.onclick = () => {
       selectedBoss = b;
+
+      document.querySelectorAll("#bossList button").forEach(x => {
+        x.classList.remove("selected-boss");
+      });
+      btn.classList.add("selected-boss");
+
       update();
     };
+
     container.appendChild(btn);
   });
 }
@@ -126,6 +159,7 @@ function getPriority() {
   return document.querySelector('input[name="prio"]:checked').value;
 }
 
+// 🔥 central update (NOW ALWAYS RUNS)
 function update() {
   if (!selectedPlayer || !selectedBoss) return;
 
@@ -135,6 +169,11 @@ function update() {
   const cmd = `/awardgp ${selectedPlayer} ${value} ${selectedBoss.item} ${prio}`;
   document.getElementById("output").value = cmd;
 }
+
+// 🔥 THIS WAS MISSING BEFORE
+document.querySelectorAll('input[name="prio"]').forEach(r => {
+  r.addEventListener("change", update);
+});
 
 function copyCmd() {
   const box = document.getElementById("output");
