@@ -1,72 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>FTG Tools</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>FTG Early Leave EP Calculator</title>
 
-  <!-- Bootstrap CSS -->
-  <link
-    rel="stylesheet"
-    href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-  />
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
+
 </head>
 
-<body class="bg-light">
+<body class="bg-dark text-light">
 
-  <div class="container mt-5">
-    <h2 class="mb-4">FTG Tools</h2>
+<div class="container mt-5">
+  <h2 class="mb-4">FTG – Early Leave EP Calculator</h2>
 
-    <!-- List container -->
-    <div id="wowLinks" class="list-group"></div>
+  <div class="card bg-secondary text-white p-4">
+
+    <div class="form-group">
+      <label>Raid Start Time (Server Time UTC+7)</label>
+      <input type="time" id="startTime" class="form-control" value="18:30">
+    </div>
+
+    <div class="form-group">
+      <label>Raid End Time (Server Time UTC+7)</label>
+      <input type="time" id="endTime" class="form-control" value="21:00">
+    </div>
+
+    <div class="form-group">
+      <label>Raid EP Value</label>
+      <input type="number" id="epValue" class="form-control" value="50">
+    </div>
+
+    <div class="form-group">
+      <label>Time Player Left (Server Time UTC+7)</label>
+      <input type="time" id="leaveTime" class="form-control">
+    </div>
+
+    <button class="btn btn-warning mt-3" onclick="calculateEP()">Calculate</button>
+
+    <hr>
+
+    <h4>Result</h4>
+    <div id="result"></div>
+
   </div>
+</div>
 
-  <script>
-    const BASE_EDIT_URL = "https://github.com/guildftg/guildftg.github.io/edit/";
+<script>
+function timeToMinutes(t) {
+    const [h, m] = t.split(":").map(Number);
+    return h * 60 + m;
+}
 
-    const wowLinks = [
-      { url: "/tools/signup_checker", edit_url: "main/tools/signup_checker/index.html", text: "Multi Signup Checker" },
-      { url: "/tools/comp_checker", edit_url: "main/tools/comp_checker/index.html", text: "Roster Validator" },
-      { url: "/tools/quest_counter", edit_url: "main/tools/quest_counter/index.html", text: "Quest Submissions" },
-      { url: "/tools/quest_audit", edit_url: "main/tools/quest_audit/index.html", text: "CLM Quest Auditor" },
-      { url: "/tools/clm", edit_url: "main/tools/clm/index.html", text: "CLM Points Dashboard" },
-      { url: "/tools/roster", edit_url: "main/tools/roster/index.html", text: "Guild Roster Dashboard" },
-      { url: "/tools/HybridSR/", edit_url: "main/tools/HybridSR/index.html", text: "Hybrid SR" },
-      { url: "/tools/early_leave_points/", edit_url: "main/tools/early_leave_points/index.html", text: "Early Leave EP Points" },
-      { url: "/tools/weakauras/CLM_Start_Raid_Reminder.txt", edit_url: "main/tools/weakauras/CLM_Start_Raid_Reminder.txt", text: "[WeakAura] CLM Start Raid Reminder" },
-      { url: "/tools/weakauras/Master_Looter_FTG_Raids.txt", edit_url: "main/tools/weakauras/Master_Looter_FTG_Raids.txt", text: "[WeakAura] Master Looter FTG Raids" },
-    ];
+function calculateEP() {
+    let start = timeToMinutes(document.getElementById("startTime").value);
+    let end = timeToMinutes(document.getElementById("endTime").value);
+    let leave = timeToMinutes(document.getElementById("leaveTime").value);
+    let epTotal = parseFloat(document.getElementById("epValue").value);
 
-    // Render full list
-    function renderWoWList() {
-      const container = document.getElementById("wowLinks");
-      container.innerHTML = "";
-
-      wowLinks.forEach(link => {
-        const item = document.createElement("div");
-        item.className = "list-group-item d-flex justify-content-between align-items-center";
-
-        const mainLink = document.createElement("a");
-        mainLink.href = link.url;
-        mainLink.textContent = link.text;
-        mainLink.target = "_blank";
-
-        const editBtn = document.createElement("a");
-        editBtn.href = BASE_EDIT_URL + link.edit_url;
-        editBtn.textContent = "Edit";
-        editBtn.target = "_blank";
-        editBtn.className = "btn btn-sm btn-outline-secondary";
-
-        item.appendChild(mainLink);
-        item.appendChild(editBtn);
-
-        container.appendChild(item);
-      });
+    // invalid guard
+    if (isNaN(leave)) {
+        document.getElementById("result").innerHTML = "Enter leave time";
+        return;
     }
 
-    // Initial load
-    window.addEventListener("DOMContentLoaded", renderWoWList);
-  </script>
+    // clamp leave time
+    if (leave < start) leave = start;
+    if (leave > end) leave = end;
+
+    let totalDuration = end - start;
+    let attendedDuration = leave - start;
+
+    let ratio = attendedDuration / totalDuration;
+    let earnedEP = ratio * epTotal;
+
+    document.getElementById("result").innerHTML =
+        `<b>Attendance:</b> ${(ratio * 100).toFixed(2)}%<br>` +
+        `<b>Earned EP:</b> ${earnedEP.toFixed(2)}`;
+}
+</script>
 
 </body>
 </html>
