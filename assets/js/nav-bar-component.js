@@ -1,23 +1,26 @@
+/**
+ * Shared NavBar component assumes boostrap and custom css files are loaded.
+ */
 class NavBar extends HTMLElement {
     connectedCallback() {
         const activeItem = Number(this.getAttribute("active-item"));
-        const hrefBase = activeItem == 1 ? "." : "..";
+        const hrefOrigin = window.location.origin;
         const navItems = [
-            { name: "About", url: hrefBase + "/index.html#aboutUs", active: activeItem == 1 ? "active" : "" },
-            { name: "Loot System", url: hrefBase + "/loot/index.html", active: activeItem == 2 ? "active" : "" },
-            { name: "Raider Expectations", url: hrefBase + "/raiding/index.html", active: activeItem == 3 ? "active" : "" },
-            { name: "Raid Structure", url: hrefBase + "/raids/index.html", active: activeItem == 4 ? "active" : "" },
-            { name: "Leadership", url: hrefBase + "/leadership/index.html", active: activeItem == 5 ? "active" : "" },
+            { name: "About", url: hrefOrigin + "/index.html#aboutUs", active: activeItem == 1 ? "active" : "" },
+            { name: "Loot System", url: hrefOrigin + "/loot/", active: activeItem == 2 ? "active" : "" },
+            { name: "Raider Expectations", url: hrefOrigin + "/raiding/", active: activeItem == 3 ? "active" : "" },
+            { name: "Raid Structure", url: hrefOrigin + "/raids/", active: activeItem == 4 ? "active" : "" },
+            { name: "Leadership", url: hrefOrigin + "/leadership/", active: activeItem == 5 ? "active" : "" },
             { name: "Warcraft Logs", url: "https://fresh.warcraftlogs.com/guild/us/dreamscythe/ftg", active: "" },
             { name: "Join", url: "https://discord.gg/BXNDTVCyhf", active: "" }
         ];
 
         this.innerHTML = `
-            <header class="sticky-top py-1 bg-dark">
+            <header class="sticky-top bg-dark">
                 <nav class="navbar navbar-expand-lg">
                 <div class="container-fluid">
                     <a href="/">
-                    <img class="navbar-brand logo px-3 rounded-circle" style="max-height: 90px" src="${hrefBase}/assets/images/ftg_logo.png" alt="FTG Guild Logo">
+                    <img class="navbar-brand logo px-3 rounded-circle" style="max-height: 90px" src="${hrefOrigin}/assets/images/ftg_logo.png" alt="FTG Guild Logo">
                     <!-- <img 
                     class="navbar-brand logo px-3 rounded-circle"
                     style="max-height: 90px"

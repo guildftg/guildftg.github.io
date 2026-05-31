@@ -11,25 +11,28 @@
     <meta property="og:url" content="https://ftgguild.com/">
     <meta property="og:type" content="website">
     <title>Home - FTG Guild</title>
-    <link href="assets/css/custom.css" rel="stylesheet">
-    <link href="assets/css/branding.css" rel="stylesheet">
-    <link rel="icon" href="assets/images/ftg_logo.png" type="image/png">
     <link href="assets/css/bootstrap.min.css" rel="stylesheet">
-    <link href="assets/css/product.css" rel="stylesheet">
+    <link href="assets/css/custom.css" rel="stylesheet">
+    <link rel="icon" href="assets/images/ftg_logo.png" type="image/png">
     <script src="assets/js/nav-bar-component.js" defer></script>
+    <script src="assets/js/footer-bar-component.js" defer></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var btn = document.getElementById("return-to-top");
+
+        window.addEventListener("scroll", function() {
+            btn.style.display =
+                (document.documentElement.scrollTop > 20) ? "block" : "none";
+        });
+
+        btn.addEventListener("click", function(e) {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+    });
+    </script>
+    <script src="assets/js/bootstrap.bundle.min.js"></script>
     <style>
-    .bd-placeholder-img {
-      font-size: 1.125rem;
-      text-anchor: middle;
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      user-select: none;
-    }
-    @media (min-width: 768px) {
-      .bd-placeholder-img-lg {
-        font-size: 3.5rem;
-      }
-    }
     .main-box {
       width: 80%;
       height: 300px;
@@ -283,51 +286,6 @@
       </div>
       <a href="#" class="btn btn-primary scroll-to-top" id="return-to-top">↑</a>
     </main>
-    <footer class="container mt-5 py-5">
-      <div class="row">
-        <div class="col-md-4">
-          <img class="logo rounded-circle" style="max-height: 100px" src="assets/images/ftg_logo.png" alt="FTG Logo">
-          <!-- <img 
-          class="logo rounded-circle"
-          style="max-height: 100px"
-          src="assets/images/ftg_logo.png"
-          srcset="
-            assets/images/ftg_logo-64.png 64w,
-            assets/images/ftg_logo-128.png 128w,
-            assets/images/ftg_logo-256.png 256w
-          "
-          sizes="100px"
-          loading="lazy"
-          decoding="async"
-          alt="FTG Logo"> -->
-          <small class="d-block text-muted mt-3">
-            © 2026 FTG Guild
-            <a href="/login" class="text-muted ms-2" style="text-decoration: none;">Login</a>
-          </small>
-        </div>
-        <div id="aboutUs" class="col-md-8">
-          <h3>About FTG</h3>
-          <p>
-            FTG is a raiding guild built on stability, consistency, and shared responsibility. We combine structured leadership, intentional raid systems, and a supportive community culture to create an environment where players can perform, improve, and enjoy the game without unnecessary friction. Our focus is on reliable execution, clear expectations, and maintaining a guild where effort, preparation, and respect are recognized and rewarded.
-          </p>
-        </div>
-      </div>
-    </footer>
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var btn = document.getElementById("return-to-top");
-
-        window.addEventListener("scroll", function() {
-            btn.style.display =
-                (document.documentElement.scrollTop > 20) ? "block" : "none";
-        });
-
-        btn.addEventListener("click", function(e) {
-            e.preventDefault();
-            window.scrollTo({ top: 0, behavior: "smooth" });
-        });
-    });
-    </script>
-    <script src="assets/js/bootstrap.bundle.min.js"></script>
+    <footer-bar></footer-bar>
   </body>
 </html>

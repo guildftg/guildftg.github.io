@@ -6,80 +6,37 @@
   <title>Raider Expectations - FTG Guild</title>
 
   <!-- Bootstrap CSS -->
-  <link href="../assets/css/custom.css" rel="stylesheet">
-  <link href="../assets/css/branding.css" rel="stylesheet">
   <link href="../assets/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../assets/css/custom.css" rel="stylesheet">
   <link rel="icon" href="../assets/images/ftg_logo.png" type="image/png">
   <script src="../assets/js/nav-bar-component.js" defer></script>
-  <style>
-    .sub-header {
-      background-color: var(--bs-dark-bg-subtle);
-      padding: 20px 30px;
-      position: sticky;
-      top: 0;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid var(--bs-dark-border-subtle);
-    }
+  <script src="../../assets/js/footer-bar-component.js" defer></script>
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+      var btn = document.getElementById("return-to-top");
 
-    .sub-header h1 {
-      margin: 0;
-      font-size: 18px;
-    }
+      window.addEventListener("scroll", function() {
+          btn.style.display =
+              (document.documentElement.scrollTop > 20) ? "block" : "none";
+      });
 
-    .btn {
-      background: #4f7cff;
-      color: white;
-      padding: 10px 14px;
-      border-radius: 6px;
-      text-decoration: none;
-      font-weight: bold;
-      transition: 0.2s;
-    }
-
-    .btn:hover {
-      background: #3b63d1;
-    }
-
-    .container {
-      max-width: 900px;
-      margin: auto;
-      padding: 30px 20px;
-    }
-
-    h2 {
-      color: #7fb3ff;
-      margin-top: 30px;
-    }
-
-    .card {
-      background: var(--bs-dark-bg-subtle);
-      padding: 0px 20px 20px 20px;
-      border-radius: 10px;
-      margin-bottom: 20px;
-      border: 1px solid var(--bs-dark-border-subtle);
-    }
-
-    .highlight {
-      color: #ffd36e;
-      font-weight: bold;
-    }
-
-    ul {
-      padding-left: 20px;
-    }
-  </style>
+      btn.addEventListener("click", function(e) {
+          e.preventDefault();
+          window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+  });
+  </script>
+  <script src="assets/js/bootstrap.bundle.min.js"></script>
 </head>
 
 <body>
 <nav-bar active-item="3"></nav-bar>
 <header class="sub-header">
   <h1>⚔️ FTG Raider Expectations</h1>
-  <a class="btn" href="/raiding/changes">View Changelog</a>
+  <!--<a class="btn" href="/raiding/changes">View Changelog</a>-->
 </header>
 
-<div class="container">
+<div class="sub-container">
 
   <div class="card">
     <h2>Welcome</h2>
@@ -206,7 +163,11 @@
     </ul>
   </div>
 
+  <a href="#" class="btn btn-primary scroll-to-top" id="return-to-top">↑</a>
+
 </div>
+
+<footer-bar></footer-bar>
 
 </body>
 </html>

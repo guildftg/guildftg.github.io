@@ -1,100 +1,44 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="dark">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Changelog</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EP/GP Loot System - Changelog - FTG Guild</title>
 
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #0f1115;
-      color: #e6e6e6;
-      line-height: 1.6;
-    }
+  <!-- Bootstrap CSS -->
+  <link href="../../assets/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../../assets/css/custom.css" rel="stylesheet">
+  <link rel="icon" href="../../assets/images/ftg_logo.png" type="image/png">
+  <script src="../../assets/js/nav-bar-component.js" defer></script>
+  <script src="../../assets/js/footer-bar-component.js" defer></script>
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+      var btn = document.getElementById("return-to-top");
 
-    header {
-      background: #171a21;
-      padding: 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid #2a2f3a;
-      position: sticky;
-      top: 0;
-    }
+      window.addEventListener("scroll", function() {
+          btn.style.display =
+              (document.documentElement.scrollTop > 20) ? "block" : "none";
+      });
 
-    h1 {
-      margin: 0;
-      font-size: 18px;
-    }
-
-    .btn {
-      background: #4f7cff;
-      color: white;
-      padding: 10px 14px;
-      border-radius: 6px;
-      text-decoration: none;
-      font-weight: bold;
-      transition: 0.2s;
-    }
-
-    .btn:hover {
-      background: #3b63d1;
-    }
-
-    .container {
-      max-width: 900px;
-      margin: auto;
-      padding: 30px 20px;
-    }
-
-    .entry {
-      background: #171a21;
-      border: 1px solid #2a2f3a;
-      padding: 20px;
-      border-radius: 10px;
-      margin-bottom: 20px;
-    }
-
-    .version {
-      color: #7fb3ff;
-      font-weight: bold;
-      margin-bottom: 5px;
-    }
-
-    .date {
-      font-size: 12px;
-      color: #a9b0bb;
-      margin-bottom: 10px;
-    }
-
-    ul {
-      padding-left: 20px;
-    }
-
-    .tag {
-      display: inline-block;
-      background: #2a2f3a;
-      padding: 3px 8px;
-      border-radius: 5px;
-      font-size: 12px;
-      margin-right: 5px;
-    }
-  </style>
+      btn.addEventListener("click", function(e) {
+          e.preventDefault();
+          window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+  });
+  </script>
+  <script src="assets/js/bootstrap.bundle.min.js"></script>
 </head>
 
 <body>
-
-<header>
+<nav-bar active-item="2"></nav-bar>
+<header class="sub-header">
   <h1>📜 Changelog</h1>
-  <a class="btn" href="index.html">← Back to System</a>
+  <a class="btn" href="../index.html">← Back to Loot System</a>
 </header>
 
-<div class="container">
+<div class="sub-container">
 
-  <div class="entry">
+  <div class="card">
     <div class="version">v2.1 - SR System & EP Transition Updates</div>
     <div class="date">April 6, 2026</div>
     <ul>
@@ -111,7 +55,7 @@
     </ul>
   </div>
   
-  <div class="entry">
+  <div class="card">
     <div class="version">v2.0 - Raid Loot System Updates</div>
     <div class="date">March 16, 2026</div>
     <ul>
@@ -124,7 +68,7 @@
     </ul>
   </div>
   
-  <div class="entry">
+  <div class="card">
     <div class="version">v1.2 - Alternate Character Loot Priority Adjustment</div>
     <div class="date">September 30, 2025</div>
     <ul>
@@ -135,7 +79,7 @@
     </ul>
   </div>
   
-  <div class="entry">
+  <div class="card">
     <div class="version">v1.1 - Guild Quest Update</div>
     <div class="date">June 25, 2025</div>
     <ul>
@@ -144,7 +88,7 @@
     </ul>
   </div>
 
-  <div class="entry">
+  <div class="card">
     <div class="version">v1.0 - Initial Release</div>
     <div class="date">March 25, 2025</div>
     <ul>
@@ -159,7 +103,11 @@
     </ul>
   </div>
   
+  <a href="#" class="btn btn-primary scroll-to-top" id="return-to-top">↑</a>
+
 </div>
+
+<footer-bar></footer-bar>
 
 </body>
 </html>
