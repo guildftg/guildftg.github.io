@@ -134,6 +134,10 @@
     margin-top: 30px;
 }
 
+.card h3 {
+    color: var(--secondary-light);
+}
+
 .card .highlight {
     color: #ffd36e;
     font-weight: bold;

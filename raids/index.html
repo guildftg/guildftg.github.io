@@ -1,223 +1,154 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="FTG Raid Philosophy and Roster Building">
-    <title>Raids - FTG</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="FTG Raid Philosophy and Roster Building">
+  <title>Raid Structure & Philosophy - FTG Guild</title>
 
-    <link rel="icon" type="image/x-icon" href="../ftg_logo.png" />
-    <link href="../assets/css/bootstrap.min.css" rel="stylesheet">
-    <link href="assets/product.css" rel="stylesheet">
-    <link href="assets/branding.css" rel="stylesheet">
-    <link href="assets/custom.css" rel="stylesheet">
+  <!-- Bootstrap CSS -->
+  <link href="../assets/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../assets/css/custom.css" rel="stylesheet">
+  <link rel="icon" href="../assets/images/ftg_logo.png" type="image/png">
+  <script src="../assets/js/nav-bar-component.js" defer></script>
+  <script src="../assets/js/footer-bar-component.js" defer></script>
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var btn = document.getElementById("return-to-top");
+
+    window.addEventListener("scroll", function() {
+        btn.style.display =
+            (document.documentElement.scrollTop > 20) ? "block" : "none";
+    });
+
+    btn.addEventListener("click", function(e) {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  });
+  </script>
+  <script src="assets/js/bootstrap.bundle.min.js"></script>
+  <style>
+    .d-md-flex > div {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between; 
+    }
+  </style>
 </head>
 
-<body class="branding-font-cabin">
-
-<header class="sticky-top py-1">
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container-fluid">
-            <a href="/">
-                <img class="navbar-brand logo px-3" style="max-height: 80px" src="../assets/images/placeholder.png">
-            </a>
-        </div>
-    </nav>
+<body>
+<nav-bar active-item="4"></nav-bar>
+<header class="sub-header">
+  <h1>⚡️ FTG Raid Structure</h1>
+  <!--<a class="btn" href="/raiding/changes">View Changelog</a>-->
 </header>
 
-<main>
+<div class="sub-container">
 
-<!-- HERO -->
-<div class="position-relative overflow-hidden p-5 text-center bg-dark text-white">
-    <div class="col-md-6 mx-auto">
-        <h1 class="display-4">Raid Structure & Philosophy</h1>
-        <p class="lead mt-3">
-            How FTG builds raid teams, manages rosters, and approaches progression.
-        </p>
-    </div>
-</div>
-
-<!-- INTRO -->
-<div class="container py-5">
-    <p class="lead">
-        We do not follow a rigid or public “raid philosophy” document.
-        Instead, our approach is practical and evolves with the guild, the roster,
-        and the content we are progressing through.
-    </p>
-
+  <div class="card">
+    <h2>Philosophy</h2>
     <p>
-        Bench decisions are not arbitrary. They are a natural byproduct of roster
-        building in a system where raids are capped at 25 players.
+      How FTG builds raid teams, manages rosters, and approaches progression:
     </p>
-</div>
+    <ul>
+      <li>We do not follow a rigid or public “raid philosophy” document. Instead, our approach is practical and evolves with the guild, the roster, and the content we are progressing through.</li>
+      <li>Bench decisions are not arbitrary. They are a <span class="highlight">natural byproduct of roster building</span> in a system where raids are capped at 25 players.</li>
+    </ul>
+  </div>
 
-<!-- CORE FACTORS -->
-<div class="container pb-5">
-
-    <h2 class="mb-4">What Goes Into Building a Raid?</h2>
-
-    <div class="row g-4">
-
-        <div class="col-md-6">
-            <div class="p-4 bg-light h-100">
-                <h4>Availability</h4>
-                <p>
-                    One of the largest factors. With multiple raid nights and groups,
-                    players sign up based on when they are available.
-                </p>
-                <p>
-                    During Phase 1, priority is maximizing participation and gearing.
-                    In Phase 2 progression, priority shifts toward players with
-                    consistent multi-night availability.
-                </p>
-            </div>
-        </div>
-
-        <div class="col-md-6">
-            <div class="p-4 bg-light h-100">
-                <h4>Raid Composition</h4>
-                <p>
-                    Raids require a balance of tanks (2–3+), healers (5–6), and DPS.
-                    DPS roles are not interchangeable due to group synergies.
-                </p>
-                <p>
-                    Tanks and raid leaders are typically fixed, making swaps more complex.
-                </p>
-            </div>
-        </div>
-
-        <div class="col-md-6">
-            <div class="p-4 bg-light h-100">
-                <h4>Raid Support</h4>
-                <p>
-                    Each raid requires leadership: raid leading, invites, loot handling,
-                    and general coordination.
-                </p>
-                <p>
-                    Ideally, each group includes at least one officer.
-                </p>
-            </div>
-        </div>
-
-        <div class="col-md-6">
-            <div class="p-4 bg-light h-100">
-                <h4>Class Distribution</h4>
-                <p>
-                    Overstacking classes harms performance. TBC compositions are specialized.
-                </p>
-                <p>
-                    Example: most raids only bring one rogue and avoid stacking a single class heavily.
-                </p>
-            </div>
-        </div>
-
-        <div class="col-md-6">
-            <div class="p-4 bg-light h-100">
-                <h4>Consistency & Attendance</h4>
-                <p>
-                    Tracked through logs and signups (though signups can be skewed
-                    due to multiple raid options).
-                </p>
-            </div>
-        </div>
-
-        <div class="col-md-6">
-            <div class="p-4 bg-light h-100">
-                <h4>Performance</h4>
-                <p>
-                    Becomes increasingly important during harder content and
-                    when forming stable progression teams.
-                </p>
-            </div>
-        </div>
-
-        <div class="col-md-6">
-            <div class="p-4 bg-light h-100">
-                <h4>Gear Needs</h4>
-                <p>
-                    Occasionally players who no longer need gear will volunteer to sit,
-                    though this is uncommon.
-                </p>
-            </div>
-        </div>
-
-        <div class="col-md-6">
-            <div class="p-4 bg-light h-100">
-                <h4>Specific Roles</h4>
-                <p>
-                    Some encounters require niche roles (e.g. mage tanks, warlock tanks,
-                    or utility roles like fishing for Lurker).
-                </p>
-            </div>
-        </div>
-
+  <div class="card">
+    <h2>🛠️ What Goes Into Building a Raid?</h2>
+    <div class="d-md-flex flex-md-equal w-100 my-md-3">
+      <div class="me-md-3 pt-3 px-3 text-white overflow-hidden bg-secondary-subtle">
+        <h3>Availability</h3>
+        <p>We prioritize preparation, execution, and steady improvement.</p>
+        <p>Every player is expected to contribute meaningfully to raid success, ensuring each group operates efficiently and reliably.</p>
+      </div>
+      <div class="me-md-3 pt-3 px-3 text-white overflow-hidden bg-secondary-subtle">
+        <h3>Raid Composition</h3>
+        <p>Raids require a balance of tanks (2–3+), healers (5–6), and DPS. DPS roles are not interchangeable due to group synergies.</p>
+        <p>Tanks and raid leaders are typically fixed, making swaps more complex.</p>
+      </div>
     </div>
-</div>
-
-<!-- SOCIAL DYNAMICS -->
-<div class="container pb-5">
-    <div class="p-4 bg-dark text-white">
-        <h3>Social Dynamics</h3>
-        <p>
-            We try to respect friend groups where possible. However, larger groups
-            significantly increase roster complexity.
-        </p>
-        <p>
-            As progression becomes more difficult, performance and structure take priority,
-            and it may not always be possible to keep groups together.
-        </p>
+    <div class="d-md-flex flex-md-equal w-100 my-md-3">
+      <div class="me-md-3 pt-3 px-3 text-white overflow-hidden bg-secondary-subtle">
+        <h3>Raid Support</h3>
+        <p>Each raid requires leadership: raid leading, invites, loot handling, and general coordination.</p>
+        <p>Ideally, each group includes at least one officer.</p>
+      </div>
+      <div class="me-md-3 pt-3 px-3 text-white overflow-hidden bg-secondary-subtle">
+        <h3>Class Distribution</h3>
+        <p>Overstacking classes harms performance. TBC compositions are specialized.</p>
+        <p>Example: most raids only bring one rogue and avoid stacking a single class heavily.</p>
+      </div>
     </div>
-</div>
+    <div class="d-md-flex flex-md-equal w-100 my-md-3">
+      <div class="me-md-3 pt-3 px-3 text-white overflow-hidden bg-secondary-subtle">
+        <h3>Consistency & Attendance</h3>
+        <p>Tracked through logs and signups (though signups can be skewed due to multiple raid options).</p>
+      </div>
+      <div class="me-md-3 pt-3 px-3 text-white overflow-hidden bg-secondary-subtle">
+        <h3>Performance</h3>
+        <p>Becomes increasingly important during harder content and when forming stable progression teams.</p>
+      </div>
+    </div>
+    <div class="d-md-flex flex-md-equal w-100 my-md-3">
+      <div class="me-md-3 pt-3 px-3 text-white overflow-hidden bg-secondary-subtle">
+        <h3>Gear Needs</h3>
+        <p>Occasionally players who no longer need gear will volunteer to sit, though this is uncommon.</p>
+      </div>
+      <div class="me-md-3 pt-3 px-3 text-white overflow-hidden bg-secondary-subtle">
+        <h3>Specific Roles</h3>
+        <p>Some encounters require niche roles (e.g. mage tanks, warlock tanks, or utility roles like fishing for Lurker).</p>
+      </div>
+    </div>
+  </div>
 
-<!-- COMPLEXITY -->
-<div class="container pb-5">
-    <h3>Roster Building is a Puzzle</h3>
+  <div class="card">
+    <h2>🦋 Social Dynamics</h2>
     <p>
-        All of these factors make roster building a complex problem. We use custom tools
-        to manage it, but even then:
+      We try to respect friend groups where possible. However, larger groups significantly increase roster complexity.
+    </p>
+    <p>
+      As progression becomes more difficult, performance and structure take priority, and it may not always be possible to keep groups together.
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>🧩 Roster Building is a Puzzle</h2>
+    <p>
+      All of these factors make roster building a complex problem. We use custom tools to manage it, but even then:
     </p>
     <ul>
         <li>Adding one player can force multiple changes</li>
         <li>Validating a roster is easier than building one</li>
         <li>Perfect optimization is rarely possible</li>
     </ul>
-</div>
+  </div>
 
-<!-- BENCHING -->
-<div class="container pb-5">
-    <div class="p-4 bg-light">
-        <h3>On Benching</h3>
-        <p>
-            The goal is not to bench players arbitrarily. The goal is to build a successful
-            raid each night while rotating players fairly.
-        </p>
-        <p>
-            Especially outside of progression, we aim to ensure that no one is consistently sitting out.
-        </p>
-        <p class="fw-bold">
-            Having a bench is a healthy part of a raiding guild.
-        </p>
-    </div>
-</div>
-
-<!-- CONTACT -->
-<div class="container pb-5 text-center">
-    <h3>Questions or Concerns?</h3>
+  <div class="card">
+    <h2>🪑 On Benching</h2>
     <p>
-        If you feel like you are being benched more than expected,
-        reach out to leadership and we can talk through it.
+      The goal is not to bench players arbitrarily. The goal is to build a successful raid each night while rotating players fairly.
     </p>
+    <p class="fw-bold highlight">
+      Having a bench is a healthy part of a raiding guild.
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>⁉️ Questions or Concerns?</h2>
+    <p>
+      If you feel like you are being benched more than expected, reach out to leadership and we can talk through it.
+    </p>
+  </div>
+
+  <a href="#" class="btn btn-primary scroll-to-top" id="return-to-top">↑</a>
+
 </div>
 
-</main>
-
-<footer class="container py-5">
-    <div class="text-center text-muted">
-        © <script>document.write(new Date().getFullYear())</script> FTG
-    </div>
-</footer>
-
-<script src="assets/bootstrap.bundle.min.js"></script>
+<footer-bar></footer-bar>
 
 </body>
 </html>
