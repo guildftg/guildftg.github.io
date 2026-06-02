@@ -1,108 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>FTG EP Leave Calculator</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>FTG Early Leave EP Calculator</title>
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
 
 </head>
+
 <body class="bg-dark text-light">
 
-<div class="container py-5">
-    <h2 class="mb-4">FTG – Partial EP Calculator</h2>
+<div class="container mt-5">
+  <h2 class="mb-4">FTG – Early Leave EP Calculator</h2>
 
-    <div class="card bg-secondary text-light p-4">
+  <div class="card bg-secondary text-white p-4">
 
-        <div class="mb-3">
-            <label class="form-label">Raid Start Time</label>
-            <input type="datetime-local" id="startTime" class="form-control">
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label">Raid End Time</label>
-            <input type="datetime-local" id="endTime" class="form-control">
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label">Raid EP Value</label>
-            <input type="number" id="epValue" class="form-control" value="50">
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label">Time Player Left (Server Time UTC+7)</label>
-            <input type="datetime-local" id="leaveTime" class="form-control">
-        </div>
-
-        <button class="btn btn-warning mt-3" onclick="calculateEP()">Calculate EP</button>
-
-        <hr>
-
-        <h4>Result</h4>
-        <div id="result" class="fs-5"></div>
-
+    <div class="form-group">
+      <label>Raid Start Time (Server Time UTC+7)</label>
+      <input type="time" id="startTime" class="form-control" value="18:30">
     </div>
+
+    <div class="form-group">
+      <label>Raid End Time (Server Time UTC+7)</label>
+      <input type="time" id="endTime" class="form-control" value="21:00">
+    </div>
+
+    <div class="form-group">
+      <label>Raid EP Value</label>
+      <input type="number" id="epValue" class="form-control" value="50">
+    </div>
+
+    <div class="form-group">
+      <label>Time Player Left (Server Time UTC+7)</label>
+      <input type="time" id="leaveTime" class="form-control">
+    </div>
+
+    <button class="btn btn-warning mt-3" onclick="calculateEP()">Calculate</button>
+
+    <hr>
+
+    <h4>Result</h4>
+    <div id="result"></div>
+
+  </div>
 </div>
 
 <script>
-const SERVER_OFFSET_HOURS = 7;
-
-// round UP to nearest 5 minutes
-function roundUpToFive(date) {
-    let ms = 1000 * 60 * 5;
-    return new Date(Math.ceil(date.getTime() / ms) * ms);
+function timeToMinutes(t) {
+    const [h, m] = t.split(":").map(Number);
+    return h * 60 + m;
 }
-
-// convert local system time → server time (UTC+7)
-function getServerTimeNow() {
-    let now = new Date();
-    let utc = now.getTime() + (now.getTimezoneOffset() * 60000);
-    return new Date(utc + (SERVER_OFFSET_HOURS * 3600000));
-}
-
-// format for datetime-local input
-function formatDateTimeLocal(date) {
-    const pad = n => n.toString().padStart(2, '0');
-    return date.getFullYear() + "-" +
-        pad(date.getMonth() + 1) + "-" +
-        pad(date.getDate()) + "T" +
-        pad(date.getHours()) + ":" +
-        pad(date.getMinutes());
-}
-
-// set defaults on load
-window.onload = function() {
-    let serverNow = roundUpToFive(getServerTimeNow());
-
-    let raidStart = new Date(serverNow);
-    raidStart.setHours(18, 30, 0, 0);
-
-    let raidEnd = new Date(serverNow);
-    raidEnd.setHours(21, 0, 0, 0);
-
-    document.getElementById("startTime").value = formatDateTimeLocal(raidStart);
-    document.getElementById("endTime").value = formatDateTimeLocal(raidEnd);
-    document.getElementById("leaveTime").value = formatDateTimeLocal(serverNow);
-};
 
 function calculateEP() {
-    let start = new Date(document.getElementById("startTime").value);
-    let end = new Date(document.getElementById("endTime").value);
-    let leave = new Date(document.getElementById("leaveTime").value);
+    let start = timeToMinutes(document.getElementById("startTime").value);
+    let end = timeToMinutes(document.getElementById("endTime").value);
+    let leave = timeToMinutes(document.getElementById("leaveTime").value);
     let epTotal = parseFloat(document.getElementById("epValue").value);
 
-    if (leave > end) leave = end;
+    // invalid guard
+    if (isNaN(leave)) {
+        document.getElementById("result").innerHTML = "Enter leave time";
+        return;
+    }
+
+    // clamp leave time
     if (leave < start) leave = start;
+    if (leave > end) leave = end;
 
     let totalDuration = end - start;
     let attendedDuration = leave - start;
 
     let ratio = attendedDuration / totalDuration;
-    let earnedEP = epTotal * ratio;
+    let earnedEP = ratio * epTotal;
 
     document.getElementById("result").innerHTML =
-        "Attendance: <b>" + (ratio * 100).toFixed(2) + "%</b><br>" +
-        "Earned EP: <b>" + earnedEP.toFixed(2) + "</b>";
+        `<b>Attendance:</b> ${(ratio * 100).toFixed(2)}%<br>` +
+        `<b>Earned EP:</b> ${earnedEP.toFixed(2)}`;
 }
 </script>
 
