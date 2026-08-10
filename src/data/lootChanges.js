@@ -1,0 +1,67 @@
+export const lootChangeEntries = [
+  {
+    version: "v2.1",
+    title: "SR System & EP Transition Updates",
+    date: "April 6, 2026",
+    changes: [
+      "Combined Gruul + Magtheridon into a single shared soft reserve (SR) sheet.",
+      "Limited SR to one reserve per item to simplify distribution.",
+      "Standardized SR eligibility across mains and alts.",
+      "Added restriction: alts may not SR Dragonspine Trophy unless no mains have reserved it.",
+      "Defined loot priority for non-SR items: Main Spec mains > Off Spec mains > Main Spec alts > Off Spec alts.",
+      "Clarified that players asked to bring alts for raid needs are treated as mains for that run.",
+      "Introduced 10 EP awarded for raid attendance as part of EP/GP phase-in.",
+      "Reintroduced weekly EP quest (Wednesday-Monday cycle), awarded before Tuesday raid.",
+      "Weekly quest contributions support tank resistance gear preparation for Phase 2.",
+      "Begun phased reintroduction of EP/GP system ahead of full rollout in Phase 2.",
+    ],
+  },
+  {
+    version: "v2.0",
+    title: "Raid Loot System Updates",
+    date: "March 16, 2026",
+    changes: [
+      "Reintroduced EPGP as the primary loot system for all raid groups starting in Phase 2.",
+      "Implemented SR raid system with a +1 mechanic for contested Main Spec loot; +1 does not apply to Off Spec or influence SR rolls.",
+      "Standardized handling of disenchanting materials: 25-man raid materials are stored in the guild bank, while 10-man raid materials are managed by individual groups.",
+      "Guild bank now receives “material bag” style loot (e.g., gem bags) from 25-man raids for centralized distribution.",
+      "Established profession recipe/pattern rules: mains have priority, items must be learned (not sold), and eligible skill requirements must be met or nearly met.",
+      "Bind on Equip recipes with no immediate use are stored in the guild bank until a qualified member can learn them.",
+    ],
+  },
+  {
+    version: "v1.2",
+    title: "Alternate Character Loot Priority Adjustment",
+    date: "September 30, 2025",
+    changes: [
+      "Adjusted alternate character loot eligibility: alts may now only roll on Low Priority or Off-Spec items.",
+      "Mains now receive priority over alts at Low Priority Tier; if both roll Low, the main character is awarded the item.",
+      "Clarified intent to prioritize main character gearing while still allowing meaningful alt participation.",
+      "Exception added: if a player is specifically requested by the guild to raid on an alt, normal alt restrictions do not apply.",
+    ],
+  },
+  {
+    version: "v1.1",
+    title: "Guild Quest Update",
+    date: "June 25, 2025",
+    changes: [
+      "Guild quests can now be completed by either mains or alts.",
+      "EP rewards are assigned to the character that completes the quest and cannot be transferred or stacked onto another character.",
+    ],
+  },
+  {
+    version: "v1.0",
+    title: "Initial Release",
+    date: "March 25, 2025",
+    changes: [
+      "Introduced full EP/GP loot system with Priority Tiers (High, Medium, Low, Off-Spec) determining GP cost and loot eligibility.",
+      "Loot distribution based on EP/GP ratio within selected priority tier; ties resolved via internal roll system.",
+      "Implemented weekly 10% EP/GP decay to maintain fairness and reduce inactive advantage.",
+      "Added Base GP system to prevent infinite ratios and stabilize new player progression.",
+      "Introduced Weekly EP Quest for off-raid guild contribution rewards via material donations.",
+      "Established Reserved Items system limited to legendary gear assignments outside standard EP/GP rules.",
+      "Enabled alternate characters with separate EP/GP tracking and restricted priority vs mains.",
+      "Defined main character change rules, including EP reset, GP baseline reset, and officer approval requirements.",
+    ],
+  },
+];
