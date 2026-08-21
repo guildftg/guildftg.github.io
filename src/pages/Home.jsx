@@ -47,7 +47,7 @@ export default function Home() {
             <GuildEmblem size={50} />
             <span className="utility-text text-uppercase">Dreamscythe Horde</span>
           </div>
-          <h1>&lt;FTG &gt;</h1>
+          <h1>&lt;FTG&gt;</h1>
           <p className="lead my-4">
             Horde raiding guild on Dreamscythe running {teamCountText} 25-man
             progression teams. {CURRENT_PROGRESSION}.
