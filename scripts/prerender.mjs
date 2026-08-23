@@ -22,6 +22,7 @@
 // below for why those are hand-rolled HTML rather than SSR output).
 import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { pathToFileURL } from "node:url";
 import {
   DEFAULT_SHARE_IMAGE_HEIGHT,
   DEFAULT_SHARE_IMAGE_TYPE,
@@ -186,7 +187,7 @@ function generateRedirectPage(target) {
 
 async function main() {
   const template = await readFile(templatePath, "utf8");
-  const { render } = await import(ssrEntryPath);
+  const { render } = await import(pathToFileURL(ssrEntryPath).href);
 
   for (const [routePath, meta] of Object.entries(routeMeta)) {
     const bodyHtml = render(routePath);
