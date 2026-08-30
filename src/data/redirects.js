@@ -4,7 +4,12 @@
 // route (in-app navigation), and `scripts/prerender.mjs` turns each entry into a
 // static redirect page (direct/hard loads, crawlers, JS-disabled clients) - so
 // this map is the only place a redirect needs to be added or changed.
-import { DISCORD_INVITE_URL, TMB_URL, WARCRAFTLOGS_URL } from "./config.js";
+import {
+  DISCORD_INVITE_URL,
+  PUG_TMB_URL,
+  TMB_URL,
+  WARCRAFTLOGS_URL,
+} from "./config.js";
 
 export const redirects = {
   "/roster": "/raiding",
@@ -13,6 +18,7 @@ export const redirects = {
   "/guild-rules": "/rules",
   "/rules/loot-changes": "/raiding/loot-changes",
   "/tmb": TMB_URL,
+  "/pug": PUG_TMB_URL,
   "/logs": WARCRAFTLOGS_URL,
   "/discord": DISCORD_INVITE_URL,
 };
