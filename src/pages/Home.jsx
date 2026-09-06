@@ -5,13 +5,11 @@ import GuildEmblem from "../components/layout/GuildEmblem.jsx";
 import ResponsiveImage from "../components/layout/ResponsiveImage.jsx";
 import { CURRENT_PROGRESSION } from "../data/config";
 import { raidDays } from "../data/schedule";
-import { teams } from "../data/roster";
+import { raidLead } from "../data/roster";
 
 const listFormatter = new Intl.ListFormat("en", { style: "long", type: "conjunction" });
 
 export default function Home() {
-  const teamNames = listFormatter.format(teams.map((team) => team.name));
-  const teamCountText = teams.length === 2 ? "two" : String(teams.length);
   const raidDayText = listFormatter.format(raidDays);
   const features = [
     {
@@ -21,7 +19,7 @@ export default function Home() {
     },
     {
       title: "Performance Driven",
-      body: `We value preparation, execution, and steady improvement. Every raider is expected to contribute meaningfully to our success - that's what keeps ${teamCountText} 25-man teams progressing together on the same schedule, week after week.`,
+      body: "We value preparation, execution, and steady improvement. Every raider is expected to contribute meaningfully to our success - that's what keeps our 25-man team progressing week after week.",
       link: { to: "/raiding", label: "What are FTG raids like?" },
     },
     {
@@ -30,9 +28,9 @@ export default function Home() {
       link: { to: "/raiding#loot-system", label: "Loot Summary and Changelog" },
     },
     {
-      title: "Two Teams, One Standard",
-      body: `${teamNames} both raid ${raidDayText} under their own raid leads, with the same expectations for preparation and attendance.`,
-      link: { to: "/raiding#raid-teams", label: "Our Raid teams" },
+      title: "One Team, One Standard",
+      body: `Our 25-man team raids ${raidDayText} under ${raidLead.characterName}'s leadership, with clear expectations for preparation and attendance.`,
+      link: { to: "/raiding#raid-teams", label: "Our Raid Team" },
     },
   ];
 
@@ -49,8 +47,8 @@ export default function Home() {
           </div>
           <h1>&lt;FTG&gt;</h1>
           <p className="lead my-4">
-            Horde raiding guild on Dreamscythe running {teamCountText} 25-man
-            progression teams. {CURRENT_PROGRESSION}.
+            Horde raiding guild on Dreamscythe running a 25-man
+            progression team. {CURRENT_PROGRESSION}.
           </p>
           <DiscordCTA size="lg" className="hero-discord-cta" />
         </div>

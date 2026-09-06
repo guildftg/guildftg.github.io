@@ -4,15 +4,11 @@ import DiscordCTA from "../components/layout/DiscordCTA.jsx";
 import PageHeader from "../components/layout/PageHeader.jsx";
 import { CURRENT_PROGRESSION } from "../data/config";
 import { raidDays, raidTime } from "../data/schedule";
-import { teams } from "../data/roster";
+import { raidLead } from "../data/roster";
 
 const listFormatter = new Intl.ListFormat("en", { style: "long", type: "conjunction" });
 
 export default function Recruitment() {
-  const teamText = listFormatter.format(
-    teams.map((team) => `${team.name}, led by ${team.lead.characterName}`),
-  );
-  const teamCountText = teams.length === 2 ? "two" : String(teams.length);
   const raidDayText = listFormatter.format(raidDays);
 
   return (
@@ -30,10 +26,10 @@ export default function Recruitment() {
                 thing.
               </h2>
               <p>
-                Most guild ads promise stability. &lt;FTG&gt; has actually delivered it - a year and a half of continuous raiding, two 
-                active 25-man teams, and leadership that doesn't disappear when progression gets difficult. We have grown, 
+                Most guild ads promise stability. &lt;FTG&gt; has actually delivered it - a year and a half of continuous raiding, an
+                active 25-man team, and leadership that doesn't disappear when progression gets difficult. We have grown,
                 adapted, and rebuilt our rosters as circumstances changed without losing sight of the community behind them. 
-                Now we are seeking more reliable players who want to be part of {CURRENT_PROGRESSION}.
+                Now we are seeking more reliable players to help us finish the tier - we're {CURRENT_PROGRESSION}.
               </p>
               <div className="my-4">
                 <DiscordCTA size="lg" />
@@ -50,7 +46,7 @@ export default function Recruitment() {
                 We take progression seriously, but we also value the social side of the game that
                 keeps people logging in week after week - things like STV PvP fight nights, casual
                 raid content, and fun alt runs (Karazhan and beyond) alongside our core progression
-                teams.
+                team.
               </p>
               <p>
                 We're a guild that enjoys pushing content together, and enjoys playing the game
@@ -61,18 +57,18 @@ export default function Recruitment() {
               <h2 className="mt-5">Proof Over Promises</h2>
               <ul className="rules-list">
                 <li>A year and a half of consistent raiding on Classic Anniversary Dreamscythe</li>
-                <li>{teamCountText.charAt(0).toUpperCase() + teamCountText.slice(1)} active 25-man raid teams, {CURRENT_PROGRESSION}</li>
+                <li>One active 25-man raid team, {CURRENT_PROGRESSION}</li>
                 <li>An established leadership structure - not a disappearing officer team</li>
                 <li>Karazhan alt runs and an active Discord community of friends</li>
                 <li>A long-term vision beyond the current game phase</li>
               </ul>
 
-              <h2 className="mt-5">Two 25-Man Teams</h2>
+              <h2 className="mt-5">Our 25-Man Team</h2>
               <p>
-                <strong>{teamText}</strong>
+                <strong>Led by {raidLead.characterName}</strong>
               </p>
               <p>
-                Both raiding {raidDayText},{" "} {raidTime.server} server / {raidTime.eastern} Eastern.
+                Raiding {raidDayText},{" "} {raidTime.server} server / {raidTime.eastern} Eastern.
               </p>
 
               <h2 className="mt-5">Loot, Without the Drama</h2>

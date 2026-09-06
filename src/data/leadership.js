@@ -2,17 +2,17 @@ import { mowanza } from "./roster.js";
 
 export const guildMaster = {
   name: "BathTissue",
-  characterName: "Bathtissue",
-  class: "Paladin",
-  spec: "Holy",
+  characterNames: ["Bathtissue", "Twoplytp"],
+  class: "Druid",
+  spec: "Restoration",
   role: "Healer",
-  avatar: "bathtissue-avatar.jpg",
+  avatar: "bathtissue-twoplytp-avatar.jpg",
 };
 
 export const officers = [
   {
     ...mowanza,
-    also: "also Charlie's raid lead",
+    also: "FTG's raid lead",
   },
   {
     name: "Gorothy",

@@ -7,20 +7,4 @@ export const mowanza = {
   avatar: "mowanza-avatar.jpg",
 };
 
-export const teams = [
-  {
-    name: "Charlie",
-    lead: mowanza,
-  },
-  {
-    name: "Delta",
-    lead: {
-      name: "Authorized",
-      characterName: "Authorized",
-      class: "Warrior",
-      spec: "Fury",
-      role: "DPS",
-      avatar: "authorized-avatar.jpg",
-    },
-  },
-];
+export const raidLead = mowanza;

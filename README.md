@@ -4,7 +4,7 @@ The source for [www.ftgguild.com](https://www.ftgguild.com), the site for **&lt;
 
 ## About the guild
 
-&lt;FTG&gt; runs two 25-man progression teams, **Charlie** and **Delta**, raiding Monday/Tuesday/Thursday at 6:30 PM server (8:30 PM Eastern). Both teams are currently 10/10 in Phase 2 and prepping for Black Temple and Mount Hyjal.
+&lt;FTG&gt; runs a single 25-man progression team, raiding Monday/Tuesday/Thursday at 6:30 PM server (8:30 PM Eastern). We're 13/14 through Black Temple and Mount Hyjal, with Illidan as the only boss left.
 
 Loot runs on a personal loot list plus loot council — no EP/GP points economy. Progress is tracked on [WarcraftLogs](https://fresh.warcraftlogs.com/guild/us/dreamscythe/ftg) rather than hand-maintained on the site, and personal loot lists are managed through the guild's own [TMB](https://tmb.ftgguild.com) instance.
 
@@ -74,7 +74,15 @@ No test suite or linter is configured — this is a small, mostly-static site ma
 
 ### Deployment
 
-Pushing to `main` triggers `.github/workflows/deploy.yml`: install, `npm run build`, then publish `dist/` straight to GitHub Pages via `actions/upload-pages-artifact` + `actions/deploy-pages`. This uses Pages' native GitHub Actions deployment method — in the repo's Settings → Pages, the source is set to "GitHub Actions", not "Deploy from a branch". There's no `pages` branch to keep in sync anymore, and no manual "build locally, then drag `dist/` into a branch" step. Every pull request into `main` also runs `.github/workflows/ci.yml`, which does the same build without deploying, so a broken build (or a component that turns out not to be SSR-safe) shows up as a failed check before it merges. The custom domain (`www.ftgguild.com`) is wired up through `public/CNAME`, which Vite copies into the build output automatically.
+**To deploy a change:**
+
+1. Make your edit(s) and verify with `npm run dev` (or `npm run build && npm run preview` to check the real production build)
+2. Get the change onto `main` — commit and push directly, or if you were working on a branch: `git checkout main && git merge <branch> && git push origin main`
+3. That's it. The push itself triggers the build and deploy — check progress under the repo's [Actions tab](https://github.com/guildftg/guildftg.github.io/actions), and the live site updates within a minute or two of the run finishing.
+
+There's no local build step to run, no `dist/` to commit, and no separate `pages` branch to keep in sync — GitHub Actions rebuilds from source fresh on every push.
+
+**How it works:** pushing to `main` triggers `.github/workflows/deploy.yml`: install, `npm run build`, then publish `dist/` straight to GitHub Pages via `actions/upload-pages-artifact` + `actions/deploy-pages`. This uses Pages' native GitHub Actions deployment method — in the repo's Settings → Pages, the source is set to "GitHub Actions", not "Deploy from a branch". Every pull request into `main` also runs `.github/workflows/ci.yml`, which does the same build without deploying, so a broken build (or a component that turns out not to be SSR-safe) shows up as a failed check before it merges. The custom domain (`www.ftgguild.com`) is wired up through `public/CNAME`, which Vite copies into the build output automatically.
 
 ## Content model
 

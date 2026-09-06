@@ -50,15 +50,10 @@ export default function SiteNavBar() {
         </button>
 
         <div className="nav-actions">
+          <Nav.Link as={NavLink} to="/addons">
+            Addons
+          </Nav.Link>
           <ThemeToggle />
-          <a
-            href={DISCORD_INVITE_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="nav-link discord-link"
-          >
-            Discord
-          </a>
         </div>
 
         <Navbar.Collapse id="primary-navigation">
@@ -80,14 +75,19 @@ export default function SiteNavBar() {
             </Nav.Link>
           </Nav>
           <Nav>
-            <Nav.Link as={NavLink} to="/addons">
-              Addons
+            <a
+              href={DISCORD_INVITE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="nav-link discord-link"
+            >
+              Discord
+            </a>
+            <Nav.Link href={TMB_URL} target="_blank" rel="noopener noreferrer">
+              TMB
             </Nav.Link>
             <Nav.Link href={WARCRAFTLOGS_URL} target="_blank" rel="noopener noreferrer">
               WarcraftLogs
-            </Nav.Link>
-            <Nav.Link href={TMB_URL} target="_blank" rel="noopener noreferrer">
-              TMB
             </Nav.Link>
           </Nav>
         </Navbar.Collapse>

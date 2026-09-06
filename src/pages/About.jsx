@@ -5,13 +5,21 @@ import PersonAvatar from "../components/layout/PersonAvatar.jsx";
 import { guildMaster, officers } from "../data/leadership";
 
 function PersonCard({ person, title }) {
+  const characterNames =
+    person.characterNames ?? (person.characterName ? [person.characterName] : []);
+  const showCharacters = characterNames.length > 0 && characterNames.join() !== person.name;
+  const multipleCharacters = characterNames.length > 1;
+
   const details = [
     title ? ["Guild role", title] : null,
-    person.characterName && person.characterName !== person.name
-      ? ["Character", person.characterName]
+    showCharacters
+      ? [multipleCharacters ? "Characters" : "Character", characterNames.join(", ")]
       : null,
     person.also ? ["Also known as", person.also] : null,
-    ["Class / Spec / Role", `${person.class} - ${person.spec} - ${person.role}`],
+    [
+      multipleCharacters ? "Main Class / Spec / Role" : "Class / Spec / Role",
+      `${person.class} - ${person.spec} - ${person.role}`,
+    ],
   ].filter(Boolean);
 
   return (
@@ -72,10 +80,11 @@ export default function About() {
                 someone leaves the guild. We'll let you discover that one for yourself once you're on board and in guild chat.
               </p>
               <p>
-                We raided throughout 2025 as a single 40-man team, reaching 12/15 in Naxxramas before our progression 
-                ended at Four Horsemen. Going into TBC, we expanded into four 25-man teams and have consolidated as 
-                rosters and circumstances changed. Today, FTG runs two balanced teams - Charlie and Delta - both 10/10 in 
-                TBC Phase 2 and preparing to take on Black Temple and Mount Hyjal together in P3 starting on August 27th.
+                We raided throughout 2025 as a single 40-man team, reaching 12/15 in Naxxramas before our progression
+                ended at Four Horsemen. Going into TBC, we expanded into four 25-man teams and have consolidated as
+                rosters and circumstances changed, most recently merging our two Phase 2 teams - Charlie and Delta - back
+                into a single 25-man roster. Today, FTG runs as one team, 13/14 through Black Temple and Mount Hyjal in
+                P3, with only Illidan left.
               </p>
             </div>
           </div>
@@ -99,7 +108,7 @@ export default function About() {
             </div>
             <div className="col-lg-5">
               <p>
-                Builder who Sets &lt;FTG&gt;'s direction, owns final decisions when they're needed, and is responsible
+                Builder who sets &lt;FTG&gt;'s direction, owns final decisions when they're needed, and is responsible
                 for the guild's long-term stability. Bath prefers systems that are simple enough for
                 anyone to follow consistently over rules that need a judgment call every single time.
               </p>

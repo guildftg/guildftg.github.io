@@ -11,7 +11,7 @@ import { routeMeta } from "../../data/routeMeta.js";
 
 const DEFAULT_TITLE = "FTG - Dreamscythe Horde Raiding Guild";
 const DEFAULT_DESCRIPTION =
-  "FTG is a Horde raiding guild on Dreamscythe running two 25-man progression teams.";
+  "FTG is a Horde raiding guild on Dreamscythe running a 25-man progression team.";
 const DEFAULT_SHARE_IMAGE_ALT = "FTG guild logo";
 
 function setMetaTag(attr, key, content) {

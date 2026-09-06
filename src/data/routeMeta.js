@@ -2,17 +2,17 @@ export const routeMeta = {
   "/": {
     title: "FTG - Dreamscythe Horde Raiding Guild",
     description:
-      "<FTG> is a Horde raiding guild on Dreamscythe running two 25-man progression teams, 10/10 in Phase 2 and prepping for Black Temple and Mount Hyjal. Join our Discord.",
+      "<FTG> is a Horde raiding guild on Dreamscythe running a 25-man progression team, 13/14 through Black Temple and Mount Hyjal with only Illidan left. Join our Discord.",
   },
   "/recruitment": {
     title: "Join FTG - Recruiting Horde Raiders on Dreamscythe",
     description:
-      "FTG is recruiting for Black Temple and Mount Hyjal. Two active 25-man teams, a documented loot system, and a leadership team that's been around for a year and a half. See what we offer.",
+      "FTG is recruiting for Black Temple and Mount Hyjal. An active 25-man team, a documented loot system, and a leadership team that's been around for a year and a half. See what we offer.",
   },
   "/raiding": {
     title: "Raiding - FTG Dreamscythe Horde",
     description:
-      "FTG's raid schedule, teams, loot system, and current progression - what it takes to raid with two 25-man Dreamscythe Horde progression teams heading into Black Temple and Mount Hyjal.",
+      "FTG's raid schedule, team, loot system, and current progression - what it takes to raid with a 25-man Dreamscythe Horde progression team, 13/14 through Black Temple and Mount Hyjal.",
   },
   "/about": {
     title: "About FTG - Our Story & Leadership",
