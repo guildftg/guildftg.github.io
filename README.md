@@ -4,7 +4,7 @@ The source for [www.ftgguild.com](https://www.ftgguild.com), the site for **&lt;
 
 ## About the guild
 
-&lt;FTG&gt; runs a single 25-man progression team, raiding Monday/Tuesday/Thursday at 6:30 PM server (8:30 PM Eastern). We're 13/14 through Black Temple and Mount Hyjal, with Illidan as the only boss left.
+&lt;FTG&gt; runs a single 25-man progression team, raiding Monday/Tuesday/Thursday at 6:30 PM server (8:30 PM Eastern). We're 14/14 through Black Temple and Mount Hyjal and farming both for gear.
 
 Loot runs on a personal loot list plus loot council — no EP/GP points economy. Progress is tracked on [WarcraftLogs](https://fresh.warcraftlogs.com/guild/us/dreamscythe/ftg) rather than hand-maintained on the site, and personal loot lists are managed through the guild's own [TMB](https://tmb.ftgguild.com) instance.
 

@@ -83,8 +83,8 @@ export default function About() {
                 We raided throughout 2025 as a single 40-man team, reaching 12/15 in Naxxramas before our progression
                 ended at Four Horsemen. Going into TBC, we expanded into four 25-man teams and have consolidated as
                 rosters and circumstances changed, most recently merging our two Phase 2 teams - Charlie and Delta - back
-                into a single 25-man roster. Today, FTG runs as one team, 13/14 through Black Temple and Mount Hyjal in
-                P3, with only Illidan left.
+                into a single 25-man roster. Today, FTG runs as one team, having cleared Black Temple and Mount Hyjal
+                14/14 in P3, and is now farming both for gear.
               </p>
             </div>
           </div>

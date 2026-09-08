@@ -8,4 +8,4 @@ export const DEFAULT_SHARE_IMAGE_WIDTH = "128";
 export const DEFAULT_SHARE_IMAGE_HEIGHT = "128";
 export const DEFAULT_SHARE_IMAGE_TYPE = "image/png";
 export const CURRENT_PROGRESSION =
-  "13/14 in Black Temple and Mount Hyjal - Illidan is all that's left";
+  "14/14 - Black Temple and Mount Hyjal cleared, farming for gear";

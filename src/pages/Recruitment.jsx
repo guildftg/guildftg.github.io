@@ -29,7 +29,7 @@ export default function Recruitment() {
                 Most guild ads promise stability. &lt;FTG&gt; has actually delivered it - a year and a half of continuous raiding, an
                 active 25-man team, and leadership that doesn't disappear when progression gets difficult. We have grown,
                 adapted, and rebuilt our rosters as circumstances changed without losing sight of the community behind them. 
-                Now we are seeking more reliable players to help us finish the tier - we're {CURRENT_PROGRESSION}.
+                Now we are seeking more reliable players to join us - we're {CURRENT_PROGRESSION}.
               </p>
               <div className="my-4">
                 <DiscordCTA size="lg" />
