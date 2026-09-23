@@ -5,6 +5,7 @@
 // static redirect page (direct/hard loads, crawlers, JS-disabled clients) - so
 // this map is the only place a redirect needs to be added or changed.
 import {
+  APPLY_FORM_URL,
   DISCORD_INVITE_URL,
   PUG_TMB_URL,
   TMB_URL,
@@ -21,6 +22,7 @@ export const redirects = {
   "/pug": PUG_TMB_URL,
   "/logs": WARCRAFTLOGS_URL,
   "/discord": DISCORD_INVITE_URL,
+  "/apply": APPLY_FORM_URL,
 };
 
 export function isExternalRedirect(target) {
