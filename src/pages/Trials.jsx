@@ -57,6 +57,7 @@ export default function Trials() {
           <p>Players should communicate clearly with leadership and the guild without needing to be constantly online or talking.</p>
           <ul className="rules-list">
             <li>Communicate schedule conflicts, absences, late arrivals, and early departures as early as possible.</li>
+            <li>Use Discord and/or in-game messaging (raid chat, whispers) to communicate clearly with leadership and the raid team.</li>
             <li>Read relevant Discord announcements and acknowledge or respond to important messages.</li>
             <li>Listen to raid instructions, ask for clarification when needed, and promptly communicate information that affects the raid.</li>
             <li>
@@ -77,7 +78,7 @@ export default function Trials() {
           </h2>
           <p>
             Players are expected to arrive prepared and make a reasonable effort to perform their assigned role. Performance is evaluated in context: mechanics, assignments, role
-            responsibilities, encounter difficulty, and raid needs, not meters alone.
+            responsibilities, encounter difficulty, and raid needs, not using meters alone.
           </p>
 
           <h3 className="h4 mt-4">Character and consumable preparation</h3>
@@ -185,6 +186,28 @@ export default function Trials() {
           <h2 className="mb-3" id="guild-fit">
             6. Guild Fit
           </h2>
+          <p>Core spots are earned, not guaranteed by joining the guild or completing the trial. Each trial ends in one of the following outcomes:</p>
+          <ul className="rules-list">
+            <li>
+              <strong>Core Raider:</strong> consistently meets expectations and can be trusted to contribute positively and reliably.
+            </li>
+            <li>
+              <strong>Extended Trial:</strong> shows potential, is actively improving, and has specific fixable issues or needs more raid exposure. Leadership states clearly what must be
+              demonstrated and by when.
+            </li>
+            <li>
+              <strong>Bench / Non-Core Raider:</strong> does not currently meet core expectations but may remain in FTG as a positive-fit bench or non-core member. This does not mean they are a
+              bad player or person; they have not yet demonstrated core readiness.
+            </li>
+            <li>
+              <strong>Guild Fit Issue:</strong> behavior or overall compatibility is sufficiently inconsistent with FTG's culture that departure may be appropriate. This is reserved for significant
+              or persistent issues, not ordinary performance shortcomings.
+            </li>
+          </ul>
+          <p>
+            A no-show without communication, absent a genuine emergency, means no core spot is granted at the end of the trial. Other decisions consider the player across all categories and
+            the evidence collected over time.
+          </p>
           <p>
             FTG aims to clear content efficiently, improve continuously, learn from mistakes, maintain a focused raid environment, have fun while progressing, and work as a team. FTG is not a
             hardcore progression, speedrunning, or parse-oriented guild, and personal DPS or HPS does not take priority over mechanics or raid strategy.
