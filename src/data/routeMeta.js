@@ -31,4 +31,9 @@ export const routeMeta = {
     title: "Recommended Addons - FTG",
     description: "Addons FTG recommends for raiding, professions, and healing - not required, but useful.",
   },
+  "/trials": {
+    title: "Trial Raider Program - FTG Dreamscythe Horde",
+    description:
+      "How FTG's three-week Trial Raider Evaluation works: attendance, communication, preparation, coachability, team behavior, and guild fit.",
+  },
 };

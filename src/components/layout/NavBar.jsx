@@ -67,6 +67,9 @@ export default function SiteNavBar() {
             <Nav.Link as={NavLink} to="/raiding">
               Raiding
             </Nav.Link>
+            <Nav.Link as={NavLink} to="/trials">
+              Trials
+            </Nav.Link>
             <Nav.Link as={NavLink} to="/recruitment">
               Recruitment
             </Nav.Link>

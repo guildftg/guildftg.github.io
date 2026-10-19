@@ -68,6 +68,64 @@ export default function Raiding() {
 
       <section className="page-section">
         <Container>
+          <h2 className="mb-3" id="raider-expectations">
+            Raider Role &amp; Expectations
+          </h2>
+          <p>
+            Raiders are FTG's established core raiders. They are expected to be dependable, prepared, capable of fulfilling their assigned role, receptive to feedback, and committed to the
+            success of the team.
+          </p>
+          <p>
+            FTG is a focused-but-fun progression guild, not a hardcore, speedrunning, or parse-oriented guild. We expect players to learn mechanics, improve over time, and carry their share of
+            the responsibility, not to play perfectly or top the meters every fight. Raiders are expected to:
+          </p>
+          <ul className="rules-list">
+            <li>
+              <strong>Be reliable:</strong> Sign up consistently, arrive ready, communicate schedule conflicts, and respect the time of the team.
+            </li>
+            <li>
+              <strong>Come prepared:</strong> Maintain appropriate gear, enchants, and consumables; understand encounters and assigned responsibilities before progression attempts.
+            </li>
+            <li>
+              <strong>Prioritize the team:</strong> Follow raid strategies, handle mechanics and assignments, and adapt when the raid needs something different, even when it comes at the expense
+              of personal performance.
+            </li>
+            <li>
+              <strong>Learn and improve:</strong> Accept constructive feedback, take responsibility for mistakes, and make a reasonable effort to correct recurring problems.
+            </li>
+            <li>
+              <strong>Work well with others:</strong> Communicate respectfully, contribute to a focused and enjoyable environment, and handle disagreements or roster decisions constructively.
+            </li>
+          </ul>
+          <p>
+            Holding a core role does not guarantee a spot in every encounter or raid. Composition, attendance, performance, encounter requirements, and the needs of the team may affect roster
+            decisions. Being benched is part of raiding; how a player responds matters.
+          </p>
+
+          <h2 className="mb-3 mt-5" id="trial-raiders">
+            Trial Raiders &amp; Core Status
+          </h2>
+          <p>
+            New raiders complete FTG's <strong>three-week Trial Raider Evaluation Process</strong>. The trial assesses reliability, communication, preparation, performance, coachability, teamwork,
+            and compatibility with FTG's approach to progression.
+          </p>
+          <p>
+            Completing the trial does not automatically guarantee a core spot. Leadership will review the player's overall readiness and determine whether to grant Raider status, extend the trial
+            where appropriate, or conclude that the core role is not the right fit.
+          </p>
+          <p className="mb-0">
+            <strong>Existing raiders:</strong> Players who were raiding with FTG before this evaluation process was introduced will not be required to repeat a trial solely because the process is
+            new. Leadership will establish their Raider status based on their demonstrated reliability, preparation, performance, teamwork, and overall contribution. Existing membership or tenure
+            alone does not guarantee permanent core status, but the new process is intended to clarify expectations, not retroactively penalize players for rules that did not previously exist.
+          </p>
+          <p className="mb-0">
+            <Link to="/trials">See the full trial standards</Link>.
+          </p>
+        </Container>
+      </section>
+
+      <section className="page-section">
+        <Container>
           <h2 className="mb-3">Current Progress</h2>
           <div className="external-panel">
             <p className="lead success-text fw-semibold">{CURRENT_PROGRESSION}.</p>

@@ -91,6 +91,62 @@ export default function About() {
         </Container>
       </section>
 
+      <section className="page-section">
+        <Container>
+          <div className="row g-5">
+            <div className="col-lg-8">
+              <h2>Mission &amp; Purpose</h2>
+              <ul className="rules-list">
+                <li>FTG is one guild and one community. Everyone has a place here and can raid at their own pace.</li>
+                <li>Progression seats are open to anyone who meets the standards and earns them through preparation, performance, and commitment.</li>
+                <li>We respect our members' time, treat people fairly, and expect everyone to follow through on their commitments.</li>
+              </ul>
+
+              <h2 className="mt-5">Core Values</h2>
+              <ul className="rules-list">
+                <li>
+                  <strong>Genuinely Welcoming:</strong> Membership is open to everyone. Being part of FTG is never skill-gated; progression seats are earned.
+                </li>
+                <li>
+                  <strong>Fair Play:</strong> Criteria and rules are clear and shared in advance. No favoritism or after-the-fact changes.
+                </li>
+                <li>
+                  <strong>Reliability:</strong> We keep our commitments. Raids start when scheduled, and people follow through.
+                </li>
+                <li>
+                  <strong>Treat People Decently:</strong> Respect others. Harassment, discrimination, and toxicity have no place here.
+                </li>
+                <li>
+                  <strong>Fun:</strong> FTG should make playing the game more enjoyable, not feel like a second job.
+                </li>
+                <li>
+                  <strong>Progression:</strong> Progression players prepare, improve, and carry their weight. The opportunity is open; the seat is earned.
+                </li>
+              </ul>
+
+              <h2 className="mt-5">Goals</h2>
+              <ul className="rules-list">
+                <li>Maintain one cohesive community as FTG grows.</li>
+                <li>Give members meaningful opportunities to raid regardless of their pace or progression level.</li>
+                <li>Keep progression accessible, transparent, and fairly judged.</li>
+                <li>Clear content consistently without making FTG a hardcore-first guild.</li>
+                <li>Build systems and culture that do not depend on any one person.</li>
+              </ul>
+
+              <h2 className="mt-5">Strategy</h2>
+              <ul className="rules-list">
+                <li>FTG bridges different groups and playstyles without sacrificing a shared community.</li>
+                <li>Standards apply consistently regardless of rank, skill, or status.</li>
+                <li>We will not chase headcount, sacrifice fairness for growth, or promise progression seats.</li>
+                <li>
+                  FTG is not intended to be a top-speed, parsing, or hardcore guild. Players seeking that environment may be better served elsewhere.
+                </li>
+              </ul>
+            </div>
+          </div>
+        </Container>
+      </section>
+
       <section className="page-section section-alt">
         <Container>
           <h2>Leadership Structure</h2>
