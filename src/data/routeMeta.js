@@ -36,4 +36,9 @@ export const routeMeta = {
     description:
       "How FTG's three-week Trial Raider Evaluation works: attendance, communication, preparation, coachability, team behavior, and guild fit.",
   },
+  "/roles": {
+    title: "Leadership Roles - FTG Dreamscythe Horde",
+    description:
+      "The seven leadership roles that run FTG: Quartermaster, Raid Coordinator, Recruitment, Loot Systems Admin, Marketing, Tooling, and Community Events, and what each one owns.",
+  },
 };

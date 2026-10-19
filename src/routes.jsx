@@ -8,6 +8,7 @@ import Rules from "./pages/Rules.jsx";
 import RaidingLootChanges from "./pages/RaidingLootChanges.jsx";
 import Addons from "./pages/Addons.jsx";
 import Trials from "./pages/Trials.jsx";
+import Roles from "./pages/Roles.jsx";
 import NotFound from "./pages/NotFound.jsx";
 import ExternalRedirect from "./components/layout/ExternalRedirect.jsx";
 import { isExternalRedirect, redirects } from "./data/redirects.js";
@@ -30,6 +31,7 @@ export default function AppRoutes() {
         <Route path="/rules" element={<Rules />} />
         <Route path="/addons" element={<Addons />} />
         <Route path="/trials" element={<Trials />} />
+        <Route path="/roles" element={<Roles />} />
 
         {Object.entries(redirects).map(([path, target]) =>
           isExternalRedirect(target) ? (
