@@ -34,7 +34,7 @@ const roles = [
     fit: "Detail-oriented, impartial, comfortable using web tools or addons, and patient explaining the system to raiders.",
   },
   {
-    id: "marketing",
+    id: "promoter",
     name: "Promoter",
     purpose: "Builds a strong public image for FTG and keeps players interested in joining, even when raids are full.",
     body:
