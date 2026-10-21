@@ -50,10 +50,10 @@ const roles = [
 ];
 
 const expectations = [
-  "Take responsibility for the role, not just help with them.",
-  "Attend at least 75% or more of meetings and take part in them.",
+  "Take responsibility for their role, not just help with them.",
+  "Attend and participate in at least 75% or more of leadership meetings.",
   "Give a quick (five minutes or less) report at each meeting.",
-  "Communicate to the guild through regular announcements through Discord and in raid when it helps.",
+  "Communicate to the guild through regular announcements by Discord and in raid when it helps.",
   "Communicate if you need to step back from leadership or your role. An early warning is always appreciated.",
 ];
 
@@ -62,57 +62,13 @@ export default function Roles() {
     <>
       <PageHeader
         title="Leadership Roles"
-        subtitle="The five recurring jobs that run FTG, each owned end to end, so the Guild Master is not the default for any of them."
+        subtitle={`Five leadership functions that keep <FTG> running: from organizing, distributing and purchasing materials from the guild vault, keeping the roster full with new players to keep raids running, making sure our loot systems run smoothly and fairly, advertising and promoting the guild, and bringing members together outside raid nights and across raid teams.`}
       />
 
       <section className="page-section">
         <Container>
-          <h2 className="mb-3">How These Roles Work</h2>
-          <div className="table-responsive">
-            <table className="table">
-              <thead>
-                <tr>
-                  <th scope="col">Role</th>
-                  <th scope="col">Owns</th>
-                  <th scope="col">Busiest when</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Quartermaster</td>
-                  <td>Guild bank, materials, consumables</td>
-                  <td>Phase start, weekly reset</td>
-                </tr>
-                <tr>
-                  <td>Recruitment</td>
-                  <td>Sourcing, applicants, trials</td>
-                  <td>Continuous</td>
-                </tr>
-                <tr>
-                  <td>Loot Systems Admin</td>
-                  <td>Loot tools, wishlists, loot records</td>
-                  <td>Phase start, raid nights</td>
-                </tr>
-                <tr>
-                  <td>Marketing</td>
-                  <td>Public face: ads, website copy, social posts</td>
-                  <td>Weekly</td>
-                </tr>
-                <tr>
-                  <td>Community Events</td>
-                  <td>Non-raid events that bring members together</td>
-                  <td>Weekly or biweekly</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </Container>
-      </section>
-
-      <section className="page-section">
-        <Container>
           <h2 className="mb-3">Expectations</h2>
-          <p>Every role holder agrees to:</p>
+          <p>Members of FTG leadership agree to:</p>
           <ol className="rules-list mb-0">
             {expectations.map((item) => (
               <li key={item}>{item}</li>
