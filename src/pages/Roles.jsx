@@ -6,18 +6,19 @@ const roles = [
   {
     id: "quartermaster",
     name: "Quartermaster",
-    purpose:
-      "Runs and organizes the guild vault and keeps raid teams supplied with consumables, materials, and crafted gear.",
+    purpose: "Runs the guild vault, keeping raid teams stocked with consumables, materials, and crafted gear.",
     body:
-      "They are responsible for the guild vault's organization, contents, gold, guild quest contributions, raid consumables, material distribution, crafting and purchasing for the guild. They manage item distributions, crafting, purchasing. Expect higher workloads around the launch of a new raid phase. Good fit: organized, trustworthy, and comfortable saying no to a request.",
+      "Responsible for organizing the vault, managing its gold, tracking guild quest contributions, distributing raid supplies, crafting, and purchasing on the guild's behalf. Expect a heavier workload around each new raid phase.",
+    fit: "Organized, trustworthy, and comfortable saying no.",
   },
   {
     id: "recruitment",
     name: "Recruitment",
     purpose:
-      "Maintains enough roster depth to ensure FTG raids keep running smoothly, recruiting for roster gaps proactively. Works with a group of guild recruiters inside and outside leadership, since recruiting is too much for one person.",
+      "Keeps the roster deep enough that FTG raids run smoothly, filling gaps before they become problems. Leads a team of recruiters from across the guild, since strong recruiting takes more than one person.",
     body:
-      "They are responsible for the guild's applicants, application review, tracking trial raiders, updating lists of priority needs, coordinating other recruiters and regular bumping of guild recruitment advertisements. They find PUGs for our raids, decide which applicants trial, and work with trial raiders who are failing to meet expectations. Good fit: available, friendly, responsive, a good judge of people, knows what each class and spec brings to a raid composition.",
+      "Responsible for reviewing applications, tracking trial raiders, keeping the list of priority needs current, coordinating recruiters, and regularly bumping recruitment ads. Also finds PUGs for raids, decides which applicants trial, and works with trial raiders who aren't meeting expectations.",
+    fit: "Available, friendly, responsive, a good judge of people, and knows what each spec brings to a raid.",
     note: (
       <>
         Trial raiders are evaluated against the <Link to="/trials">published trial standards</Link>.
@@ -27,35 +28,36 @@ const roles = [
   {
     id: "loot_systems_admin",
     name: "Loot Systems Admin",
-    purpose:
-      "Keeps loot systems running, maintains records, documentation, communicates any changes and answers questions members may have about our loot systems.",
+    purpose: "Keeps our loot systems running, maintains records, communicates changes, and answers members' loot questions.",
     body:
-      "They are responsible for making sure TMB (That's My BIS) and information about our loot systems are kept up to date, that loot council is functional, and that Loot Masters are knowledgeable and available for raids. They decide wishlist deadlines, record corrections, handle any disputes, rule interpretations, and any change to how loot is awarded. Good fit: detail-oriented, unbiased on who gets what, patient explaining the system to raiders and comfortable with web tools and addons.",
+      "Responsible for keeping TMB (That's My BIS) up to date, maintaining loot documentation, supporting loot council, and making sure Loot Masters are prepared for every raid. Sets wishlist deadlines, corrects records, settles disputes, interprets rules, and manages any change to how loot is awarded.",
+    fit: "Detail-oriented, impartial, comfortable using web tools or addons, and patient explaining the system to raiders.",
   },
   {
     id: "marketing",
     name: "Promoter",
-    purpose:
-      "Promotes FTG to the masses positively, aiming to build a strong image of the guild and attempts to attract players to join even when raids are full.",
+    purpose: "Builds a strong public image for FTG and keeps players interested in joining, even when raids are full.",
     body:
-      "They are responsible for website copy, progression and kill posts, screenshots and clips, and FTG's public tone. They advertise the guild, decide where and when to post, build visuals and media collection celebrating our wins. Good fit: consistent, writes well, has an eye for a good screenshot, and understands what makes FTG different from other guilds.",
+      "Responsible for website content, progression posts, screenshots, clips, and FTG's public tone. Advertises the guild, schedules posts, and builds a media collection celebrating our wins.",
+    fit: "Consistent, writes well, has an eye for a good screenshot, comfortable being FTG's voice online, and understands what sets FTG apart.",
   },
   {
     id: "community_events",
     name: "Community Events",
     purpose:
-      "Responsible for the culture side of FTG, so members know each other beyond their raid group and have reasons to log in on off nights.",
+      "Leads FTG's culture outside of raids, helping members get to know each other beyond their raid group and giving them reasons to log in on off nights.",
     body:
-      "They manage the event calendar outside raids, host social events in WoW twice a month, celebrate guild traditions, and milestone celebrations. They decide what events to run and when (avoiding raid times). Good fit: creative, social, welcoming, good at getting people involved, reliable about showing up for events they announce.",
+      "Manages the event calendar outside raids, hosts social events in WoW twice a month, keeps guild traditions going, and celebrates milestones. Decides which events to run and when, avoiding raid times.",
+    fit: "Creative, social, welcoming, good at getting people involved, and reliable about showing up for announced events.",
   },
 ];
 
 const expectations = [
-  "Take responsibility for their role, not just help with them.",
-  "Attend and participate in at least 75% or more of leadership meetings.",
-  "Give a quick (five minutes or less) report at each meeting.",
-  "Communicate to the guild through regular announcements by Discord and in raid when it helps.",
-  "Communicate if you need to step back from leadership or your role. An early warning is always appreciated.",
+  "Take full responsibility for their role, not just help out.",
+  "Attend and participate in at least 75% of leadership meetings.",
+  "Give a short report (five minutes or less) at each meeting.",
+  "Keep the guild informed with regular announcements on Discord, and in raid when helpful.",
+  "Give early notice if they need to step back from their role or from leadership.",
 ];
 
 export default function Roles() {
@@ -63,7 +65,7 @@ export default function Roles() {
     <>
       <PageHeader
         title="Leadership Roles"
-        subtitle={`Five leadership functions that keep <FTG> running: from organizing, distributing and purchasing materials from the guild vault, keeping the roster full with new players to keep raids running, making sure our loot systems run smoothly and fairly, advertising and promoting the guild, and bringing members together outside raid nights and across raid teams.`}
+        subtitle={`The leadership roles that keep <FTG> running: stocking the guild vault, keeping the roster full, running fair loot systems, promoting the guild, and bringing members together outside of raids.`}
       />
 
       <section className="page-section">
@@ -85,7 +87,10 @@ export default function Roles() {
               {role.name}
             </h2>
             <p>{role.purpose}</p>
-            <p className={role.note ? "" : "mb-0"}>{role.body}</p>
+            <p>{role.body}</p>
+            <p className={role.note ? "" : "mb-0"}>
+              <strong>Good fit:</strong> {role.fit}
+            </p>
             {role.note && <p className="mb-0">{role.note}</p>}
           </Container>
         </section>
