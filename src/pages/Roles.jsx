@@ -7,17 +7,17 @@ const roles = [
     id: "quartermaster",
     name: "Quartermaster",
     purpose:
-      "Runs and organizes the guild vault and keeps raid teams supplied with consumables, materials, and crafted gear, so no raider is blocked from a gearing requirement.",
+      "Runs and organizes the guild vault and keeps raid teams supplied with consumables, materials, and crafted gear.",
     body:
-      "They own the vault's organization, contents, and gold, guild quest contributions, raid consumable and material distribution, and crafting and purchasing for the guild. They decide routine distributions, withdrawals, and crafting or purchase orders within a spending limit set by officers, and escalate spending above that limit, disputes over requests, and changes to contribution rules. Expect about 2-3 hours a week, more in the week before a new phase. Good fit: organized, trustworthy with shared gold, comfortable saying no to a request.",
+      "They are responsible for the guild vault's organization, contents, gold, guild quest contributions, raid consumables, material distribution, crafting and purchasing for the guild. They manage item distributions, crafting, purchasing. Expect higher workloads around the launch of a new raid phase. Good fit: organized, trustworthy, and comfortable saying no to a request.",
   },
   {
     id: "recruitment",
     name: "Recruitment",
     purpose:
-      "Keeps the roster deep enough to field every raid, closing class gaps before they cost a raid night. Leads a group of recruiters inside and outside leadership, since recruiting is too much for one person.",
+      "Maintains enough roster depth to ensure FTG raids keep running smoothly, recruiting for roster gaps proactively. Works with a group of guild recruiters inside and outside leadership, since recruiting is too much for one person.",
     body:
-      "They own the applicant pipeline, application review, trial tracking, the open-roles list, and coordinating the guild's recruiters. They decide which applicants move to trial and how recruiting work is split among recruiters, and escalate final acceptance, trial failures, and applicants with a history in the community. Expect about 3 hours a week, spread across most days. Good fit: friendly, responsive, a good judge of people, knows what each class and spec brings to a raid.",
+      "They are responsible for the guild's applicants, application review, tracking trial raiders, updating lists of priority needs, coordinating other recruiters and regular bumping of guild recruitment advertisements. They find PUGs for our raids, decide which applicants trial, and work with trial raiders who are failing to meet expectations. Good fit: available, friendly, responsive, a good judge of people, knows what each class and spec brings to a raid composition.",
     note: (
       <>
         Trial raiders are evaluated against the <Link to="/trials">published trial standards</Link>.
@@ -28,24 +28,25 @@ const roles = [
     id: "loot_systems_admin",
     name: "Loot Systems Admin",
     purpose:
-      "Keeps the loot system running and its records correct, so the Loot Council and Loot Master can make and apply decisions without touching the tools themselves.",
+      "Keeps loot systems running, maintains records, documentation, communicates any changes and answers questions members may have about our loot systems.",
     body:
-      "They own That's My BIS (accounts, item lists, wishlists), loot history records, and the published loot rules page. They decide tool setup, wishlist deadlines and formatting, and record corrections with an audit note, and escalate disputes, rule interpretations, and any change to how awards are decided. Expect about 2 hours a week, plus 5-6 hours in the two weeks before a new phase. Good fit: detail-oriented, neutral on who gets what, comfortable with web tools, patient explaining the system to raiders.",
+      "They are responsible for making sure TMB (That's My BIS) and information about our loot systems are kept up to date, that loot council is functional, and that Loot Masters are knowledgeable and available for raids. They decide wishlist deadlines, record corrections, handle any disputes, rule interpretations, and any change to how loot is awarded. Good fit: detail-oriented, unbiased on who gets what, patient explaining the system to raiders and comfortable with web tools and addons.",
   },
   {
     id: "marketing",
-    name: "Marketing",
-    purpose: "Keeps FTG visible and accurately described to the players we want to recruit, every day, not only when we are short.",
+    name: "Promoter",
+    purpose:
+      "Promotes FTG to the masses positively, aiming to build a strong image of the guild and attempts to attract players to join even when raids are full.",
     body:
-      "They own recruitment ads and daily bumps, website copy, progression and kill posts, screenshots and clips, and FTG's public tone. They decide ad wording, where and when to post, and visuals, and escalate claims about guild policy or standards and anything that names other guilds or players. Expect about 10 minutes a day plus 1-2 hours a week. Good fit: writes well, has an eye for a good screenshot, keeps a consistent daily habit, understands what makes FTG different.",
+      "They are responsible for website copy, progression and kill posts, screenshots and clips, and FTG's public tone. They advertise the guild, decide where and when to post, build visuals and media collection celebrating our wins. Good fit: consistent, writes well, has an eye for a good screenshot, and understands what makes FTG different from other guilds.",
   },
   {
     id: "community_events",
     name: "Community Events",
     purpose:
-      "Runs the non-raid side of FTG, so members know each other beyond their raid group and have reasons to log in on off nights.",
+      "Responsible for the culture side of FTG, so members know each other beyond their raid group and have reasons to log in on off nights.",
     body:
-      "They own the event calendar outside raids, social events in WoW and other games, guild traditions, and milestone celebrations. They decide what events to run, when, and who hosts, avoiding raid nights, and escalate prizes paid from the guild bank, events with other guilds, and conduct problems at events. Expect about 2 hours a week. Good fit: social, welcoming, good at getting people involved, reliable about showing up for events they announce.",
+      "They manage the event calendar outside raids, host social events in WoW twice a month, celebrate guild traditions, and milestone celebrations. They decide what events to run and when (avoiding raid times). Good fit: creative, social, welcoming, good at getting people involved, reliable about showing up for events they announce.",
   },
 ];
 

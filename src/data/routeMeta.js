@@ -39,6 +39,6 @@ export const routeMeta = {
   "/roles": {
     title: "Leadership Roles - FTG Dreamscythe Horde",
     description:
-      "The five leadership roles that run FTG: Quartermaster, Recruitment, Loot Systems Admin, Marketing, and Community Events, and what each one owns.",
+      "The five leadership roles that run FTG: Quartermaster, Recruitment, Loot Systems Admin, Promoter, and Community Events, and what each one owns.",
   },
 };
